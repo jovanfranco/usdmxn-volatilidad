@@ -13,6 +13,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Prueba una estrategia de cruce de promedios móviles con costos de operación, caída máxima y validación por mitades del periodo.
 * Resuelve problemas de esperanza y varianza y los comprueba con simulaciones Monte Carlo.
 * Calcula probabilidades condicionales y aplica el teorema de Bayes con un ejemplo ilustrativo.
+* Simula la distribución binomial, la ley de los grandes números y el teorema central del límite.
 
 ## Contenido
 
@@ -23,6 +24,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * `clase5_cruce_promedios.ipynb`: cruce de promedios móviles 10/50, 20/100 y 50/200, costos de operación, sensibilidad al costo y validación por mitades.
 * `clase6_esperanza_varianza.ipynb`: fundamentos de probabilidad (no usa datos de USD/MXN). Esperanza, varianza, simulación Monte Carlo de un dado y de una apuesta con ventaja pequeña.
 * `clase7_condicional_bayes.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Probabilidad condicional, independencia y teorema de Bayes con un ejemplo ilustrativo de 100 días.
+* `clase8_distribuciones_tcl.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Distribución binomial, regla de 68, 95 y 99.7, error estándar, ley de los grandes números y teorema central del límite con simulaciones.
 
 ## Qué aprendí
 
@@ -42,6 +44,9 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Una apuesta con ventaja positiva (55% de ganar 1 peso, 45% de perder 1) tuvo esperanza de 10 en 100 apuestas, pero 13.3% de los jugadores simulados terminó en pérdida. La esperanza sola no basta: hay que medir también la dispersión.
 * La probabilidad condicional cambia el universo que se mira: filtrar por una condición modifica la probabilidad. Dos eventos son independientes solo si saber uno no cambia la probabilidad del otro, y no se deben multiplicar probabilidades sin verificarlo.
 * P(A dado B) y P(B dado A) son preguntas distintas con respuestas distintas. Bayes permite voltear la condicional y actualizar una creencia con evidencia nueva.
+* Con una ventaja real (por ejemplo 55% de acierto) y pocas operaciones, perder la mayoría sigue siendo bastante probable: 26% con 10 operaciones.
+* El error estándar del promedio es la desviación estándar entre la raíz de n. Para reducirlo a la décima parte hacen falta 100 veces más datos, y por eso el Sharpe medido en pocos años tiene un margen de error grande (del orden de 1 entre la raíz de los años, como guía aproximada).
+* El teorema central del límite hace que los promedios de muchas variables independientes se parezcan a una normal, pero depende de la independencia y converge lento cuando hay colas gordas, así que en mercado funciona solo como aproximación.
 
 ## Resultados de la clase 5
 
@@ -64,11 +69,11 @@ Ninguna combinación muestra una ventaja demostrable. El cruce 10/50 pierde en l
 * La volatilidad móvil de 30 días reacciona con retraso y el escalado usa un tope de 2x.
 * Con solo 16 días extremos, la asimetría de las colas es una pista y no una prueba.
 * Se probaron solo tres combinaciones de ventanas. Buscar la mejor entre muchas llevaría a sobreajuste.
-* Las clases 6 y 7 son ejercicios didácticos. Las simulaciones usan semilla fija y el ejemplo de noticias y movimientos de la clase 7 son 100 días hipotéticos, no datos reales de mercado.
+* Las clases 6, 7 y 8 son ejercicios didácticos. Las simulaciones usan semilla fija y el ejemplo de noticias y movimientos de la clase 7 son 100 días hipotéticos, no datos reales de mercado.
 
 ## Próximos pasos
 
-Distribuciones y teorema central del límite, álgebra lineal, regresión, EWMA y GARCH, y después estrategias con validación fuera de muestra.
+Pruebas de hipótesis e intervalos de confianza, álgebra lineal, regresión, EWMA y GARCH, y después estrategias con validación fuera de muestra.
 
 ## Aviso
 
