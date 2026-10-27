@@ -1,6 +1,6 @@
 # USD/MXN y fundamentos cuantitativos con Python
 
-Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad que hay detrás.
+Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad y estadística que hay detrás.
 
 ## Qué hace
 
@@ -14,6 +14,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Resuelve problemas de esperanza y varianza y los comprueba con simulaciones Monte Carlo.
 * Calcula probabilidades condicionales y aplica el teorema de Bayes con un ejemplo ilustrativo.
 * Simula la distribución binomial, la ley de los grandes números y el teorema central del límite.
+* Aplica pruebas de hipótesis, p-valores e intervalos de confianza, y calcula el estadístico t de un rendimiento promedio de USD/MXN.
 
 ## Contenido
 
@@ -25,6 +26,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * `clase6_esperanza_varianza.ipynb`: fundamentos de probabilidad (no usa datos de USD/MXN). Esperanza, varianza, simulación Monte Carlo de un dado y de una apuesta con ventaja pequeña.
 * `clase7_condicional_bayes.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Probabilidad condicional, independencia y teorema de Bayes con un ejemplo ilustrativo de 100 días.
 * `clase8_distribuciones_tcl.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Distribución binomial, regla de 68, 95 y 99.7, error estándar, ley de los grandes números y teorema central del límite con simulaciones.
+* `clase9_hipotesis_confianza.ipynb`: pruebas de hipótesis, p-valor exacto con la binomial, intervalo de confianza y estadístico t del rendimiento diario de USD/MXN, y probabilidad de falsos positivos al probar muchas estrategias.
 
 ## Qué aprendí
 
@@ -45,8 +47,12 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * La probabilidad condicional cambia el universo que se mira: filtrar por una condición modifica la probabilidad. Dos eventos son independientes solo si saber uno no cambia la probabilidad del otro, y no se deben multiplicar probabilidades sin verificarlo.
 * P(A dado B) y P(B dado A) son preguntas distintas con respuestas distintas. Bayes permite voltear la condicional y actualizar una creencia con evidencia nueva.
 * Con una ventaja real (por ejemplo 55% de acierto) y pocas operaciones, perder la mayoría sigue siendo bastante probable: 26% con 10 operaciones.
-* El error estándar del promedio es la desviación estándar entre la raíz de n. Para reducirlo a la décima parte hacen falta 100 veces más datos, y por eso el Sharpe medido en pocos años tiene un margen de error grande (del orden de 1 entre la raíz de los años, como guía aproximada).
+* El error estándar del promedio es la desviación estándar entre la raíz de n. Para reducirlo a la décima parte hacen falta 100 veces más datos, y por eso el Sharpe medido en pocos años tiene un margen de error grande.
 * El teorema central del límite hace que los promedios de muchas variables independientes se parezcan a una normal, pero depende de la independencia y converge lento cuando hay colas gordas, así que en mercado funciona solo como aproximación.
+* El p-valor es la probabilidad de ver datos tan buenos como los observados si la hipótesis nula fuera cierta. No es la probabilidad de que la estrategia sirva: confundirlas es el mismo error de P(A dado B) contra P(B dado A).
+* Un intervalo de confianza muestra entre qué valores probablemente está el efecto verdadero. Si incluye el cero, no se puede descartar que no haya ventaja.
+* Como guía aproximada, el estadístico t de un Sharpe es el Sharpe por la raíz de los años de datos. Con un Sharpe pequeño hacen falta muchos años para tener evidencia.
+* Probar muchas estrategias infla los falsos positivos: con 20 pruebas sin ventaja y corte de 5%, la probabilidad de que al menos una salga significativa por azar es de 64%. Lo relevante no es el p-valor de la ganadora, sino cuántas se probaron.
 
 ## Resultados de la clase 5
 
@@ -70,10 +76,12 @@ Ninguna combinación muestra una ventaja demostrable. El cruce 10/50 pierde en l
 * Con solo 16 días extremos, la asimetría de las colas es una pista y no una prueba.
 * Se probaron solo tres combinaciones de ventanas. Buscar la mejor entre muchas llevaría a sobreajuste.
 * Las clases 6, 7 y 8 son ejercicios didácticos. Las simulaciones usan semilla fija y el ejemplo de noticias y movimientos de la clase 7 son 100 días hipotéticos, no datos reales de mercado.
+* En la clase 9, el intervalo de confianza y el estadístico t suponen rendimientos independientes. Eso no se cumple del todo en USD/MXN por la volatilidad en rachas, así que son una aproximación.
+* Todavía no se aplica una corrección formal por pruebas múltiples, solo se ilustra el problema.
 
 ## Próximos pasos
 
-Pruebas de hipótesis e intervalos de confianza, álgebra lineal, regresión, EWMA y GARCH, y después estrategias con validación fuera de muestra.
+Probabilidad para entrevistas (martingalas), álgebra lineal y cálculo, regresión, series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
 
 ## Aviso
 
