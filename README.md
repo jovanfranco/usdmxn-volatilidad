@@ -26,7 +26,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * `clase6_esperanza_varianza.ipynb`: fundamentos de probabilidad (no usa datos de USD/MXN). Esperanza, varianza, simulación Monte Carlo de un dado y de una apuesta con ventaja pequeña.
 * `clase7_condicional_bayes.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Probabilidad condicional, independencia y teorema de Bayes con un ejemplo ilustrativo de 100 días.
 * `clase8_distribuciones_tcl.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Distribución binomial, regla de 68, 95 y 99.7, error estándar, ley de los grandes números y teorema central del límite con simulaciones.
-* `clase9_hipotesis_confianza.ipynb`: pruebas de hipótesis, p-valor exacto con la binomial, intervalo de confianza y estadístico t del rendimiento diario de USD/MXN, y probabilidad de falsos positivos al probar muchas estrategias.
+* `clase9_hipotesis_confianza.ipynb`: pruebas de hipótesis y p-valor exacto con la binomial (60 de 100 aciertos da 2.8% y 55 de 100 da 18.4%). Intervalo de confianza del rendimiento diario de USD/MXN de octubre de 2020 a octubre de 2026: de menos 0.042% a 0.026%, que incluye el cero (estadístico t de menos 0.47). También calcula la probabilidad de falsos positivos al probar 20 estrategias (64.2%).
 
 ## Qué aprendí
 
@@ -50,7 +50,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * El error estándar del promedio es la desviación estándar entre la raíz de n. Para reducirlo a la décima parte hacen falta 100 veces más datos, y por eso el Sharpe medido en pocos años tiene un margen de error grande.
 * El teorema central del límite hace que los promedios de muchas variables independientes se parezcan a una normal, pero depende de la independencia y converge lento cuando hay colas gordas, así que en mercado funciona solo como aproximación.
 * El p-valor es la probabilidad de ver datos tan buenos como los observados si la hipótesis nula fuera cierta. No es la probabilidad de que la estrategia sirva: confundirlas es el mismo error de P(A dado B) contra P(B dado A).
-* Un intervalo de confianza muestra entre qué valores probablemente está el efecto verdadero. Si incluye el cero, no se puede descartar que no haya ventaja.
+* Un intervalo de confianza muestra entre qué valores probablemente está el efecto verdadero. Si incluye el cero, no se puede descartar que no haya ventaja. Con casi seis años de datos, el rendimiento anual de comprar y mantener USD/MXN queda en un rango de aproximadamente menos 10% a 6%, que incluye el cero.
 * Como guía aproximada, el estadístico t de un Sharpe es el Sharpe por la raíz de los años de datos. Con un Sharpe pequeño hacen falta muchos años para tener evidencia.
 * Probar muchas estrategias infla los falsos positivos: con 20 pruebas sin ventaja y corte de 5%, la probabilidad de que al menos una salga significativa por azar es de 64%. Lo relevante no es el p-valor de la ganadora, sino cuántas se probaron.
 
