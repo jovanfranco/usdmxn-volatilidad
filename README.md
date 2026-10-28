@@ -1,6 +1,6 @@
 # USD/MXN y fundamentos cuantitativos con Python
 
-Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad y estadística que hay detrás.
+Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística y álgebra lineal que hay detrás.
 
 ## Qué hace
 
@@ -16,6 +16,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Simula la distribución binomial, la ley de los grandes números y el teorema central del límite.
 * Aplica pruebas de hipótesis, p-valores e intervalos de confianza, y calcula el estadístico t de un rendimiento promedio de USD/MXN.
 * Resuelve problemas clásicos de probabilidad de entrevista (martingalas, ruina del apostador, análisis del primer paso, Monty Hall, cumpleaños y coleccionista) y los comprueba con simulaciones.
+* Calcula rendimientos y varianza de portafolios con producto punto, matrices y la matriz de covarianza, y mide la diversificación de un portafolio de tres pares de divisas.
 
 ## Contenido
 
@@ -29,6 +30,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * `clase8_distribuciones_tcl.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Distribución binomial, regla de 68, 95 y 99.7, error estándar, ley de los grandes números y teorema central del límite con simulaciones.
 * `clase9_hipotesis_confianza.ipynb`: pruebas de hipótesis y p-valor exacto con la binomial (60 de 100 aciertos da 2.8% y 55 de 100 da 18.4%). Intervalo de confianza del rendimiento diario de USD/MXN de octubre de 2020 a octubre de 2026: de menos 0.042% a 0.026%, que incluye el cero (estadístico t de menos 0.47). También calcula la probabilidad de falsos positivos al probar 20 estrategias (64.2%).
 * `clase10_probabilidad_entrevistas.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Simulaciones de ruina del apostador con y sin ventaja, tiempo esperado hasta ver un patrón de caras y cruces, problema del cumpleaños, Monty Hall y coleccionista de caras del dado, comparadas con su solución teórica.
+* `clase11_algebra_lineal.ipynb`: álgebra lineal con `numpy`. Rendimiento de un portafolio como producto punto y matriz por vector, varianza de un portafolio de dos activos con la matriz de covarianza, y un ejemplo con datos reales de tres pares de divisas (USD/MXN, USD/JPY y USD/EUR) que compara la volatilidad del portafolio con el promedio simple de las volatilidades.
 
 ## Qué aprendí
 
@@ -59,6 +61,9 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Con una ventaja real, el capital inicial decide el riesgo de ruina: con 55% de acierto y apuestas de una unidad, la ruina eventual es de 13.4% con 10 unidades de capital y de 1.8% con 20. El tamaño de posición pesa tanto como la ventaja.
 * El análisis del primer paso convierte problemas de esperanza en ecuaciones sencillas. Esperar HH toma 6 lanzamientos en promedio y esperar HT toma 4, aunque ambos patrones tengan la misma probabilidad de aparecer en dos lanzamientos.
 * Las variables indicadoras y la linealidad de la esperanza resuelven problemas como el de los sombreros sin calcular distribuciones completas.
+* El rendimiento de un portafolio es el producto punto de los pesos con los rendimientos, y una matriz por el vector de pesos da la serie completa de rendimientos diarios de una sola vez.
+* La varianza de un portafolio depende de las varianzas y de las correlaciones: con correlación 1 no hay diversificación, con correlación 0 la volatilidad de dos activos iguales baja a la raíz de 2 veces menos, y con correlación menos 1 el riesgo puede cancelarse. En forma de matriz es `w @ cov @ w`.
+* Con correlaciones menores que 1, la volatilidad de un portafolio resulta menor que el promedio simple de las volatilidades de sus activos.
 
 ## Resultados de la clase 5
 
@@ -85,10 +90,11 @@ Ninguna combinación muestra una ventaja demostrable. El cruce 10/50 pierde en l
 * En la clase 9, el intervalo de confianza y el estadístico t suponen rendimientos independientes. Eso no se cumple del todo en USD/MXN por la volatilidad en rachas, así que son una aproximación.
 * Todavía no se aplica una corrección formal por pruebas múltiples, solo se ilustra el problema.
 * Los modelos de ruina de la clase 10 suponen apuestas independientes de tamaño fijo y probabilidad constante, algo que los mercados no cumplen de forma estricta.
+* En la clase 11, la matriz de covarianza se estima con datos históricos y supone que las correlaciones son estables. En épocas de estrés las correlaciones suelen subir, así que la diversificación observada en periodos tranquilos puede sobrestimar la real. Los tres pares de divisas son un ejemplo didáctico de pocos activos y no un portafolio optimizado.
 
 ## Próximos pasos
 
-Álgebra lineal y cálculo, regresión, series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
+Valores propios y PCA, cálculo y optimización, regresión, series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
 
 ## Aviso
 
