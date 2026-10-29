@@ -17,6 +17,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Aplica pruebas de hipótesis, p-valores e intervalos de confianza, y calcula el estadístico t de un rendimiento promedio de USD/MXN.
 * Resuelve problemas clásicos de probabilidad de entrevista (martingalas, ruina del apostador, análisis del primer paso, Monty Hall, cumpleaños y coleccionista) y los comprueba con simulaciones.
 * Calcula rendimientos y varianza de portafolios con producto punto, matrices y la matriz de covarianza, y mide la diversificación de un portafolio de tres pares de divisas.
+* Aplica valores propios y análisis de componentes principales (PCA) a la correlación de tres pares de divisas para encontrar los factores que mueven a los tres a la vez.
 
 ## Contenido
 
@@ -31,6 +32,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * `clase9_hipotesis_confianza.ipynb`: pruebas de hipótesis y p-valor exacto con la binomial (60 de 100 aciertos da 2.8% y 55 de 100 da 18.4%). Intervalo de confianza del rendimiento diario de USD/MXN de octubre de 2020 a octubre de 2026: de menos 0.042% a 0.026%, que incluye el cero (estadístico t de menos 0.47). También calcula la probabilidad de falsos positivos al probar 20 estrategias (64.2%).
 * `clase10_probabilidad_entrevistas.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Simulaciones de ruina del apostador con y sin ventaja, tiempo esperado hasta ver un patrón de caras y cruces, problema del cumpleaños, Monty Hall y coleccionista de caras del dado, comparadas con su solución teórica.
 * `clase11_algebra_lineal.ipynb`: álgebra lineal con `numpy`. Rendimiento de un portafolio como producto punto y matriz por vector, varianza de un portafolio de dos activos con la matriz de covarianza, y un ejemplo con datos reales de tres pares de divisas (USD/MXN, USD/JPY y USD/EUR) que compara la volatilidad del portafolio con el promedio simple de las volatilidades.
+* `clase12_valores_propios_pca.ipynb`: valores y vectores propios con ejemplos a mano comprobados en `numpy`, y PCA sobre la matriz de correlación de los rendimientos diarios de USD/MXN, USD/JPY y USD/EUR (octubre de 2020 a octubre de 2026). El primer componente explica 56.9% de la varianza y es un factor dólar (los tres pares con el mismo signo). El segundo explica 28.8% y contrasta al peso (peso 0.78) contra el yen (peso menos 0.63), con el euro casi sin participar. El tercero explica 14.3% y contrasta al euro contra el yen y el peso.
 
 ## Qué aprendí
 
@@ -64,6 +66,8 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * El rendimiento de un portafolio es el producto punto de los pesos con los rendimientos, y una matriz por el vector de pesos da la serie completa de rendimientos diarios de una sola vez.
 * La varianza de un portafolio depende de las varianzas y de las correlaciones: con correlación 1 no hay diversificación, con correlación 0 la volatilidad de dos activos iguales baja a la raíz de 2 veces menos, y con correlación menos 1 el riesgo puede cancelarse. En forma de matriz es `w @ cov @ w`.
 * Con correlaciones menores que 1, la volatilidad de un portafolio resulta menor que el promedio simple de las volatilidades de sus activos.
+* Un vector propio es una dirección que una matriz solo estira, y el valor propio es el factor de estiramiento. En una matriz de covarianza o correlación, los vectores propios son combinaciones independientes de activos y los valores propios indican cuánta varianza tiene cada una. Los valores propios de una matriz de correlación suman el número de activos.
+* En tres pares de divisas contra el dólar, más de la mitad del movimiento conjunto es un solo factor (56.9%) y dos componentes explican casi 86%, así que agregar más pares contra el dólar diversifica menos de lo que parece.
 
 ## Resultados de la clase 5
 
@@ -78,6 +82,16 @@ Periodo del 7 de octubre de 2020 al 21 de octubre de 2026, con costo supuesto de
 
 Ninguna combinación muestra una ventaja demostrable. El cruce 10/50 pierde en las dos mitades del periodo. Los Sharpe de 20/100 y 50/200 son casi cero y cambian de signo entre mitades, así que son ruido.
 
+## Resultados de la clase 12
+
+PCA sobre la matriz de correlación de los rendimientos diarios de USD/MXN, USD/JPY y USD/EUR (cotizado como dólares por euro invertido, para que los tres sean unidades de moneda extranjera por dólar), del 7 de octubre de 2020 al 21 de octubre de 2026. El signo global de cada componente es arbitrario.
+
+| Componente | Varianza explicada | Peso EUR | Peso JPY | Peso MXN | Lectura |
+|---|---|---|---|---|---|
+| 1 | 56.9% | menos 0.67 | menos 0.56 | menos 0.49 | Factor dólar: los tres pares se mueven juntos |
+| 2 | 28.8% | menos 0.05 | menos 0.63 | 0.78 | Contraste entre peso y yen, con el euro casi fuera |
+| 3 | 14.3% | menos 0.74 | 0.54 | 0.39 | Euro contra yen y peso |
+
 ## Limitaciones
 
 * No hay una estrategia con ventaja demostrada. Los resultados son de aprendizaje.
@@ -91,10 +105,11 @@ Ninguna combinación muestra una ventaja demostrable. El cruce 10/50 pierde en l
 * Todavía no se aplica una corrección formal por pruebas múltiples, solo se ilustra el problema.
 * Los modelos de ruina de la clase 10 suponen apuestas independientes de tamaño fijo y probabilidad constante, algo que los mercados no cumplen de forma estricta.
 * En la clase 11, la matriz de covarianza se estima con datos históricos y supone que las correlaciones son estables. En épocas de estrés las correlaciones suelen subir, así que la diversificación observada en periodos tranquilos puede sobrestimar la real. Los tres pares de divisas son un ejemplo didáctico de pocos activos y no un portafolio optimizado.
+* En la clase 12, el PCA usa solo tres activos y un periodo específico, así que los componentes pueden cambiar con otros pares o con otras fechas. Las lecturas del segundo y tercer componente (contraste peso contra yen, aversión al riesgo) son hipótesis y no están comprobadas con fechas de eventos. El tercer componente explica poco y puede mezclar factores específicos con ruido. Como se usó la matriz de correlación, los porcentajes hablan de movimiento compartido y no de la varianza de un portafolio concreto.
 
 ## Próximos pasos
 
-Valores propios y PCA, cálculo y optimización, regresión, series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
+Cálculo y optimización (derivadas y mínimos cuadrados), regresión, series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
 
 ## Aviso
 
