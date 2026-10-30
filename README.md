@@ -1,6 +1,6 @@
 # USD/MXN y fundamentos cuantitativos con Python
 
-Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística y álgebra lineal que hay detrás.
+Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística, álgebra lineal y cálculo que hay detrás.
 
 ## Qué hace
 
@@ -18,6 +18,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Resuelve problemas clásicos de probabilidad de entrevista (martingalas, ruina del apostador, análisis del primer paso, Monty Hall, cumpleaños y coleccionista) y los comprueba con simulaciones.
 * Calcula rendimientos y varianza de portafolios con producto punto, matrices y la matriz de covarianza, y mide la diversificación de un portafolio de tres pares de divisas.
 * Aplica valores propios y análisis de componentes principales (PCA) a la correlación de tres pares de divisas para encontrar los factores que mueven a los tres a la vez, comprueba la lectura de cada componente contra combinaciones sencillas de los pares y revisa los días más extremos del segundo componente.
+* Calcula derivadas por acercamientos, encuentra el portafolio de varianza mínima de dos activos, ajusta una línea por mínimos cuadrados (pendiente y constante) y aplica gradiente descendente a una función sencilla.
 
 ## Contenido
 
@@ -33,6 +34,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * `clase10_probabilidad_entrevistas.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Simulaciones de ruina del apostador con y sin ventaja, tiempo esperado hasta ver un patrón de caras y cruces, problema del cumpleaños, Monty Hall y coleccionista de caras del dado, comparadas con su solución teórica.
 * `clase11_algebra_lineal.ipynb`: álgebra lineal con `numpy`. Rendimiento de un portafolio como producto punto y matriz por vector, varianza de un portafolio de dos activos con la matriz de covarianza, y un ejemplo con datos reales de tres pares de divisas (USD/MXN, USD/JPY y USD/EUR) que compara la volatilidad del portafolio con el promedio simple de las volatilidades.
 * `clase12_valores_propios_pca.ipynb`: valores y vectores propios con ejemplos a mano comprobados en `numpy`, y PCA sobre la matriz de correlación de los rendimientos diarios de USD/MXN, USD/JPY y USD/EUR (octubre de 2020 a octubre de 2026). El primer componente explica 56.9% de la varianza y es un factor dólar (los tres pares con el mismo signo). El segundo explica 28.8% y contrasta al peso (peso 0.78) contra el yen (peso menos 0.63), con el euro casi sin participar. El tercero explica 14.3% y contrasta al euro contra el yen y el peso. También descompone el aporte del peso y del yen en los ocho días más extremos del segundo componente.
+* `clase13_calculo_optimizacion.ipynb`: cálculo y optimización con `numpy`. La derivada como pendiente por acercamientos (11, 10.1, 10.01 y 10.001 para x al cuadrado en x igual a 5), portafolio de varianza mínima de dos activos sin correlación con volatilidades de 10% y 20% (80% en el activo tranquilo y volatilidad de 8.94%), mínimos cuadrados con tres puntos de ejemplo (pendiente 1.64 por el origen, y 1.5 con constante 0.33), gradiente descendente que converge a 2 en el mínimo de x al cuadrado menos 4x más 5, y el cálculo de la pendiente y la correlación de los rendimientos diarios de USD/MXN contra USD/JPY.
 
 ## Qué aprendí
 
@@ -70,6 +72,11 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * En tres pares de divisas contra el dólar, más de la mitad del movimiento conjunto es un solo factor (56.9%) y dos componentes explican casi 86%, así que agregar más pares contra el dólar diversifica menos de lo que parece.
 * PCA da números y no nombres: el nombre de cada componente sale de leer el patrón de sus pesos (mismo signo, signos opuestos, pesos cerca de cero). Comprobar esa lectura contra combinaciones sencillas de los pares confirma que se leyó bien, pero no prueba la explicación económica.
 * Un componente que parece un contraste entre dos monedas puede estar dominado por una sola. El segundo componente le da el mayor peso al peso mexicano, así que movimientos grandes del peso por su cuenta también lo activan. Descomponer el aporte de cada par en los días extremos permite distinguir un contraste real de un movimiento de una sola moneda.
+* La derivada es la pendiente de una función en un punto, y la delta de una posición es la derivada de su valor respecto al precio. Para encontrar un mínimo se iguala la derivada a cero y se despeja.
+* El portafolio de varianza mínima de dos activos sin correlación, con volatilidades de 10% y 20%, pone 80% en el activo tranquilo y tiene una volatilidad de 8.94%, menor que la del activo más tranquilo por sí solo.
+* Mínimos cuadrados busca la línea que minimiza la suma de los errores al cuadrado. La pendiente mide cuánto cambia una variable por cada unidad que cambia la otra, y la constante es el valor promedio que queda sin explicar por esa pendiente. La pendiente es la covarianza entre ambas dividida entre la varianza de la variable explicativa, o también la correlación por el cociente de volatilidades. Forzar la línea a pasar por el origen cambia la pendiente.
+* El gradiente descendente llega al mínimo caminando en contra de la pendiente. Con una tasa de aprendizaje grande rebota sin llegar, y con una chica avanza muy lento.
+* Una pendiente alta entre dos series dice que se mueven juntas, no que una cause a la otra.
 
 ## Resultados de la clase 5
 
@@ -112,14 +119,11 @@ Los ocho días con mayor valor absoluto del segundo componente son el 5 de agost
 * Los modelos de ruina de la clase 10 suponen apuestas independientes de tamaño fijo y probabilidad constante, algo que los mercados no cumplen de forma estricta.
 * En la clase 11, la matriz de covarianza se estima con datos históricos y supone que las correlaciones son estables. En épocas de estrés las correlaciones suelen subir, así que la diversificación observada en periodos tranquilos puede sobrestimar la real. Los tres pares de divisas son un ejemplo didáctico de pocos activos y no un portafolio optimizado.
 * En la clase 12, el PCA usa solo tres activos y un periodo específico, así que los componentes pueden cambiar con otros pares o con otras fechas. La comprobación de correlación casi perfecta es parcialmente circular, porque los componentes se construyen con los mismos tres pares. La lectura del segundo componente como aversión al riesgo es una hipótesis: las fechas extremas coinciden con episodios de estrés, pero no se verificaron con fuentes y en 3 de los 8 días el valor lo explica sobre todo el peso. Las fechas de Yahoo Finance pueden desfasarse respecto a la fecha del evento, así que la asociación con eventos es aproximada. El tercer componente explica poco y puede mezclar factores específicos con ruido. Como se usó la matriz de correlación, los porcentajes hablan de movimiento compartido y no de la varianza de un portafolio concreto.
+* En la clase 13, los ejemplos de mínimos cuadrados usan tres puntos inventados para ilustrar el método y no dicen nada sobre mercados. La regresión con datos reales es de una sola variable, no incluye intervalos de confianza ni pruebas de significancia para la pendiente o la constante, y supone una relación lineal y estable en el tiempo. La pendiente entre dos pares de divisas mide qué tanto se mueven juntos y no causalidad. El portafolio de varianza mínima usa volatilidades y correlación supuestas, y con datos reales dependería de una matriz de covarianza estimada con error.
 
 ## Próximos pasos
 
-Cálculo y optimización (derivadas y mínimos cuadrados), regresión, series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
-
-## Aviso
-
-Proyecto educativo con datos públicos. No es recomendación de inversión.
+Regresión lineal con datos de mercado (intervalos de confianza, significancia de la pendiente y la constante, R cuadrado y residuos), series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
 
 ## Aviso
 
