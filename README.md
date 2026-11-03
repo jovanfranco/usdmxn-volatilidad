@@ -1,6 +1,6 @@
 # USD/MXN y fundamentos cuantitativos con Python
 
-Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística, álgebra lineal y cálculo que hay detrás.
+Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística, álgebra lineal, cálculo y regresión que hay detrás.
 
 ## Qué hace
 
@@ -19,6 +19,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Calcula rendimientos y varianza de portafolios con producto punto, matrices y la matriz de covarianza, y mide la diversificación de un portafolio de tres pares de divisas.
 * Aplica valores propios y análisis de componentes principales (PCA) a la correlación de tres pares de divisas para encontrar los factores que mueven a los tres a la vez, comprueba la lectura de cada componente contra combinaciones sencillas de los pares y revisa los días más extremos del segundo componente.
 * Calcula derivadas por acercamientos, encuentra el portafolio de varianza mínima de dos activos, ajusta una línea por mínimos cuadrados (pendiente y constante) y aplica gradiente descendente a una función sencilla.
+* Ajusta regresiones lineales con `statsmodels`: valores ajustados, residuos, R cuadrado, errores estándar, estadístico t e intervalos de confianza de la pendiente y la constante. Compara errores estándar clásicos y robustos en una regresión de los rendimientos de USD/MXN contra USD/JPY, revisa los supuestos con los residuos y estima por barajado cuántas veces sale una relación significativa cuando no hay ninguna.
 
 ## Contenido
 
@@ -35,6 +36,7 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * `clase11_algebra_lineal.ipynb`: álgebra lineal con `numpy`. Rendimiento de un portafolio como producto punto y matriz por vector, varianza de un portafolio de dos activos con la matriz de covarianza, y un ejemplo con datos reales de tres pares de divisas (USD/MXN, USD/JPY y USD/EUR) que compara la volatilidad del portafolio con el promedio simple de las volatilidades.
 * `clase12_valores_propios_pca.ipynb`: valores y vectores propios con ejemplos a mano comprobados en `numpy`, y PCA sobre la matriz de correlación de los rendimientos diarios de USD/MXN, USD/JPY y USD/EUR (octubre de 2020 a octubre de 2026). El primer componente explica 56.9% de la varianza y es un factor dólar (los tres pares con el mismo signo). El segundo explica 28.8% y contrasta al peso (peso 0.78) contra el yen (peso menos 0.63), con el euro casi sin participar. El tercero explica 14.3% y contrasta al euro contra el yen y el peso. También descompone el aporte del peso y del yen en los ocho días más extremos del segundo componente.
 * `clase13_calculo_optimizacion.ipynb`: cálculo y optimización con `numpy`. La derivada como pendiente por acercamientos (11, 10.1, 10.01 y 10.001 para x al cuadrado en x igual a 5), portafolio de varianza mínima de dos activos sin correlación con volatilidades de 10% y 20% (80% en el activo tranquilo y volatilidad de 8.94%), mínimos cuadrados con tres puntos de ejemplo (pendiente 1.64 por el origen, y 1.5 con constante 0.33), gradiente descendente que converge a 2 en el mínimo de x al cuadrado menos 4x más 5, y el cálculo de la pendiente y la correlación de los rendimientos diarios de USD/MXN contra USD/JPY.
+* `clase14_regresion_lineal.ipynb`: regresión lineal con `statsmodels`. Ejemplo de tres puntos comprobado a mano (constante 0.33, pendiente 1.5, R cuadrado 0.96, estadístico t cercano a 5.2 con p-valor de unos 0.12 e intervalo de 95% de la pendiente de menos 2.17 a 5.17, que incluye el cero porque solo hay un grado de libertad). También incluye la regresión de los rendimientos diarios de USD/MXN contra USD/JPY con errores estándar clásicos y robustos (HAC), la revisión de autocorrelación y curtosis de los residuos, y una prueba de barajado para estimar la tasa de falsos positivos.
 
 ## Qué aprendí
 
@@ -77,6 +79,14 @@ Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD
 * Mínimos cuadrados busca la línea que minimiza la suma de los errores al cuadrado. La pendiente mide cuánto cambia una variable por cada unidad que cambia la otra, y la constante es el valor promedio que queda sin explicar por esa pendiente. La pendiente es la covarianza entre ambas dividida entre la varianza de la variable explicativa, o también la correlación por el cociente de volatilidades. Forzar la línea a pasar por el origen cambia la pendiente.
 * El gradiente descendente llega al mínimo caminando en contra de la pendiente. Con una tasa de aprendizaje grande rebota sin llegar, y con una chica avanza muy lento.
 * Una pendiente alta entre dos series dice que se mueven juntas, no que una cause a la otra.
+* Cada punto deja un residuo (el valor real menos el ajustado). Con constante, los residuos suman cero y la línea de mínimos cuadrados minimiza la suma de sus cuadrados. Como los errores van al cuadrado, un solo dato extremo puede mover mucho la línea.
+* El R cuadrado mide qué fracción de los movimientos de la variable explicada queda cubierta por la línea, y con una sola variable explicativa es la correlación al cuadrado. Con rendimientos diarios suele ser bajo, y eso no significa que la relación sea inútil.
+* El estadístico t de la pendiente es la pendiente entre su error estándar, la misma lógica de la clase 9. Con pocos datos el valor crítico es mucho mayor que 2 (con tres puntos es 12.7), y significativo no es lo mismo que importante: con muchos datos una pendiente pequeña puede ser significativa y explicar casi nada.
+* En series de mercado conviene regresar rendimientos y no precios, para evitar relaciones espurias, y usar errores estándar robustos, porque la volatilidad en rachas y las colas gordas vuelven optimistas los errores clásicos.
+
+## Conclusión de la clase 14
+
+La regresión lineal ajusta la línea que minimiza la suma de los errores al cuadrado. La pendiente dice cuánto se mueve y cuando se mueve x, y la constante (el alfa) es lo que queda sin explicar por esa relación. Cada punto deja un residuo, y el R cuadrado mide qué fracción de los movimientos explica la línea, que con rendimientos diarios suele ser baja. Para saber si la pendiente o la constante se distinguen de cero se usa el estadístico t, la misma lógica de la clase 9, pero con pocos datos el corte de 2 no vale, y con series de mercado conviene regresar rendimientos y usar errores robustos, porque la volatilidad en rachas y las colas gordas vuelven optimistas los errores clásicos. Significativo no es lo mismo que importante, y una pendiente alta dice que dos series se mueven juntas, no que una cause a la otra.
 
 ## Resultados de la clase 5
 
@@ -119,11 +129,12 @@ Los ocho días con mayor valor absoluto del segundo componente son el 5 de agost
 * Los modelos de ruina de la clase 10 suponen apuestas independientes de tamaño fijo y probabilidad constante, algo que los mercados no cumplen de forma estricta.
 * En la clase 11, la matriz de covarianza se estima con datos históricos y supone que las correlaciones son estables. En épocas de estrés las correlaciones suelen subir, así que la diversificación observada en periodos tranquilos puede sobrestimar la real. Los tres pares de divisas son un ejemplo didáctico de pocos activos y no un portafolio optimizado.
 * En la clase 12, el PCA usa solo tres activos y un periodo específico, así que los componentes pueden cambiar con otros pares o con otras fechas. La comprobación de correlación casi perfecta es parcialmente circular, porque los componentes se construyen con los mismos tres pares. La lectura del segundo componente como aversión al riesgo es una hipótesis: las fechas extremas coinciden con episodios de estrés, pero no se verificaron con fuentes y en 3 de los 8 días el valor lo explica sobre todo el peso. Las fechas de Yahoo Finance pueden desfasarse respecto a la fecha del evento, así que la asociación con eventos es aproximada. El tercer componente explica poco y puede mezclar factores específicos con ruido. Como se usó la matriz de correlación, los porcentajes hablan de movimiento compartido y no de la varianza de un portafolio concreto.
-* En la clase 13, los ejemplos de mínimos cuadrados usan tres puntos inventados para ilustrar el método y no dicen nada sobre mercados. La regresión con datos reales es de una sola variable, no incluye intervalos de confianza ni pruebas de significancia para la pendiente o la constante, y supone una relación lineal y estable en el tiempo. La pendiente entre dos pares de divisas mide qué tanto se mueven juntos y no causalidad. El portafolio de varianza mínima usa volatilidades y correlación supuestas, y con datos reales dependería de una matriz de covarianza estimada con error.
+* En la clase 13, los ejemplos de mínimos cuadrados usan tres puntos inventados para ilustrar el método y no dicen nada sobre mercados. El portafolio de varianza mínima usa volatilidades y correlación supuestas, y con datos reales dependería de una matriz de covarianza estimada con error.
+* En la clase 14, el ejemplo de tres puntos es inventado y su inferencia tiene un solo grado de libertad. La regresión con datos reales es de una sola variable, supone una relación lineal y estable en el tiempo, y no se corrigió por cambios de régimen. Los errores estándar robustos corrigen en parte la volatilidad en rachas, pero no resuelven todos los problemas de los supuestos. Los resultados numéricos de la regresión de USD/MXN contra USD/JPY todavía no se incluyen en este README. La pendiente mide qué tanto se mueven juntos los dos pares y no causalidad.
 
 ## Próximos pasos
 
-Regresión lineal con datos de mercado (intervalos de confianza, significancia de la pendiente y la constante, R cuadrado y residuos), series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
+Regresión múltiple y regularización (ridge y lasso), series de tiempo (ARIMA y GARCH), corrección por pruebas múltiples, y después estrategias con validación fuera de muestra.
 
 ## Aviso
 
