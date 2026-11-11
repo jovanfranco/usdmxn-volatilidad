@@ -1,243 +1,68 @@
 # USD/MXN y fundamentos cuantitativos con Python
 
-Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística, álgebra lineal, cálculo, regresión, series de tiempo, modelos de volatilidad y control de pruebas múltiples que hay detrás.
+Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística, álgebra lineal, cálculo, regresión, series de tiempo, modelos de volatilidad, control de pruebas múltiples y validación hacia adelante que hay detrás.
 
-## Qué hace
+Cada clase es un notebook de Python (Google Colab). Este README es un resumen; el detalle de cada bloque (qué aprendí, resultados y limitaciones) está en la carpeta `docs/`.
 
-* Descarga precios históricos de USD/MXN con `yfinance`.
-* Calcula rendimientos diarios, volatilidad anualizada y una versión simple del ratio de Sharpe.
-* Repite el análisis en varias ventanas de tiempo con una función y un ciclo.
-* Grafica el precio, los rendimientos y su distribución con `matplotlib`.
-* Mide la volatilidad móvil y prueba un dimensionamiento de posición por volatilidad, evitando el sesgo de look ahead.
-* Compara la distribución real de los rendimientos contra una normal: días extremos, curtosis y percentiles en ambas colas.
-* Prueba una estrategia de cruce de promedios móviles con costos de operación, caída máxima y validación por mitades del periodo.
-* Resuelve problemas de esperanza y varianza y los comprueba con simulaciones Monte Carlo.
-* Calcula probabilidades condicionales y aplica el teorema de Bayes con un ejemplo ilustrativo.
-* Simula la distribución binomial, la ley de los grandes números y el teorema central del límite.
-* Aplica pruebas de hipótesis, p-valores e intervalos de confianza, y calcula el estadístico t de un rendimiento promedio de USD/MXN.
-* Resuelve problemas clásicos de probabilidad de entrevista (martingalas, ruina del apostador, análisis del primer paso, Monty Hall, cumpleaños y coleccionista) y los comprueba con simulaciones.
-* Calcula rendimientos y varianza de portafolios con producto punto, matrices y la matriz de covarianza, y mide la diversificación de un portafolio de tres pares de divisas.
-* Aplica valores propios y análisis de componentes principales (PCA) a la correlación de tres pares de divisas para encontrar los factores que mueven a los tres a la vez, comprueba la lectura de cada componente contra combinaciones sencillas de los pares y revisa los días más extremos del segundo componente.
-* Calcula derivadas por acercamientos, encuentra el portafolio de varianza mínima de dos activos, ajusta una línea por mínimos cuadrados (pendiente y constante) y aplica gradiente descendente a una función sencilla.
-* Ajusta regresiones lineales con `statsmodels`: valores ajustados, residuos, R cuadrado, errores estándar, estadístico t e intervalos de confianza de la pendiente y la constante. Compara errores estándar clásicos y robustos en una regresión de los rendimientos de USD/MXN contra USD/JPY, revisa los supuestos con los residuos y estima por barajado cuántas veces sale una relación significativa cuando no hay ninguna.
-* Ajusta una regresión múltiple de los rendimientos de USD/MXN contra otros cinco pares de divisas, mide la multicolinealidad con el VIF, compara el R cuadrado con el ajustado y evalúa mínimos cuadrados, ridge y lasso entrenando con el pasado y probando con el futuro.
-* Analiza la memoria de una serie de tiempo: prueba de estacionariedad (Dickey Fuller aumentada) del precio y de los rendimientos de USD/MXN, autocorrelación (ACF y PACF) con su banda de significancia, prueba de Ljung Box, comparación de modelos ARMA por AIC y BIC, y una prueba de un AR(1) entrenado con el 70% más antiguo de los datos y evaluado en el 30% más reciente.
-* Modela la volatilidad que cambia con el tiempo: EWMA, GARCH(1,1) con distribución t de Student y GJR sobre los rendimientos de USD/MXN. Estima con el 70% más antiguo de los datos, evalúa en el 30% más reciente con la pérdida QLIKE, revisa los residuos estandarizados con la prueba de Ljung Box, mide si la asimetría mejora el pronóstico fuera de muestra y pronostica la volatilidad a 30 días.
-* Mide el efecto de probar muchas estrategias: probabilidad de falsos positivos, cuánto Sharpe sale de puro ruido al probar 1, 20 y 100 estrategias, correcciones de Bonferroni, Holm y Benjamini Hochberg, y una familia de 30 cruces de promedios móviles de USD/MXN con costos, elegida con el 70% más antiguo de los datos y evaluada en el 30% más reciente.
+## Cómo está organizado
 
-## Contenido
-
-* `clase1_usdmxn_volatilidad.ipynb`: rendimientos, volatilidad y anualización.
-* `clase2_funciones_ciclos.ipynb`: función `analizar()` con tasa libre de riesgo y comparación entre ventanas.
-* `clase3_graficas_distribucion.ipynb`: gráficas, volatilidad móvil, probabilidad empírica, autocorrelación y dimensionamiento por volatilidad.
-* `clase4_normal_colas_gordas.ipynb`: puntajes z, curtosis, percentiles reales contra normales y asimetría de las colas.
-* `clase5_cruce_promedios.ipynb`: cruce de promedios móviles 10/50, 20/100 y 50/200, costos de operación, sensibilidad al costo y validación por mitades.
-* `clase6_esperanza_varianza.ipynb`: fundamentos de probabilidad (no usa datos de USD/MXN). Esperanza, varianza, simulación Monte Carlo de un dado y de una apuesta con ventaja pequeña.
-* `clase7_condicional_bayes.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Probabilidad condicional, independencia y teorema de Bayes con un ejemplo ilustrativo de 100 días.
-* `clase8_distribuciones_tcl.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Distribución binomial, regla de 68, 95 y 99.7, error estándar, ley de los grandes números y teorema central del límite con simulaciones.
-* `clase9_hipotesis_confianza.ipynb`: pruebas de hipótesis y p-valor exacto con la binomial (60 de 100 aciertos da 2.8% y 55 de 100 da 18.4%). Intervalo de confianza del rendimiento diario de USD/MXN de octubre de 2020 a octubre de 2026: de menos 0.042% a 0.026%, que incluye el cero (estadístico t de menos 0.47). También calcula la probabilidad de falsos positivos al probar 20 estrategias (64.2%).
-* `clase10_probabilidad_entrevistas.ipynb`: fundamentos de probabilidad (no usa datos de mercado). Simulaciones de ruina del apostador con y sin ventaja, tiempo esperado hasta ver un patrón de caras y cruces, problema del cumpleaños, Monty Hall y coleccionista de caras del dado, comparadas con su solución teórica.
-* `clase11_algebra_lineal.ipynb`: álgebra lineal con `numpy`. Rendimiento de un portafolio como producto punto y matriz por vector, varianza de un portafolio de dos activos con la matriz de covarianza, y un ejemplo con datos reales de tres pares de divisas (USD/MXN, USD/JPY y USD/EUR) que compara la volatilidad del portafolio con el promedio simple de las volatilidades.
-* `clase12_valores_propios_pca.ipynb`: valores y vectores propios con ejemplos a mano comprobados en `numpy`, y PCA sobre la matriz de correlación de los rendimientos diarios de USD/MXN, USD/JPY y USD/EUR (octubre de 2020 a octubre de 2026). El primer componente explica 56.9% de la varianza y es un factor dólar (los tres pares con el mismo signo). El segundo explica 28.8% y contrasta al peso (peso 0.78) contra el yen (peso menos 0.63), con el euro casi sin participar. El tercero explica 14.3% y contrasta al euro contra el yen y el peso. También descompone el aporte del peso y del yen en los ocho días más extremos del segundo componente.
-* `clase13_calculo_optimizacion.ipynb`: cálculo y optimización con `numpy`. La derivada como pendiente por acercamientos (11, 10.1, 10.01 y 10.001 para x al cuadrado en x igual a 5), portafolio de varianza mínima de dos activos sin correlación con volatilidades de 10% y 20% (80% en el activo tranquilo y volatilidad de 8.94%), mínimos cuadrados con tres puntos de ejemplo (pendiente 1.64 por el origen, y 1.5 con constante 0.33), gradiente descendente que converge a 2 en el mínimo de x al cuadrado menos 4x más 5, y el cálculo de la pendiente y la correlación de los rendimientos diarios de USD/MXN contra USD/JPY.
-* `clase14_regresion_lineal.ipynb`: regresión lineal con `statsmodels`. Ejemplo de tres puntos comprobado a mano (constante 0.33, pendiente 1.5, R cuadrado 0.96, estadístico t cercano a 5.2 con p-valor de unos 0.12 e intervalo de 95% de la pendiente de menos 2.17 a 5.17, que incluye el cero porque solo hay un grado de libertad). También incluye la regresión de los rendimientos diarios de USD/MXN contra USD/JPY con errores estándar clásicos y robustos (HAC), la revisión de autocorrelación y curtosis de los residuos, y una prueba de barajado para estimar la tasa de falsos positivos.
-* `clase15_regresion_multiple_regularizacion.ipynb`: regresión múltiple, multicolinealidad y regularización con `statsmodels` y `scikit-learn`. Ejemplos a mano (predicción de 1.7 y residuo de menos 0.2 con dos variables; pendientes de ridge de 1.643, 1.533, 1.095 y 0.821 y de lasso de 1.643, 1.143, 0.571 y 0 según la penalización, con tres puntos de ejemplo). Simulación de puro ruido con 20 datos y 15 variables para comparar el R cuadrado con el ajustado, regresión de los rendimientos diarios de USD/MXN contra USD/JPY, USD/EUR, USD/GBP, USD/CAD y USD/BRL con VIF y errores robustos, y comparación de mínimos cuadrados, ridge y lasso con entrenamiento en el 70% más antiguo de los datos y prueba en el 30% más reciente.
-* `clase16_series_de_tiempo.ipynb`: series de tiempo con `statsmodels`. Ejemplos a mano (cambios diarios de 0.5, menos 0.2 y 0.6 con promedio 0.3; ACF teórica de un AR(1) con phi de 0.5 de 0.5, 0.25, 0.125 y 0.0625; ACF de un MA(1) con theta de 0.6 de 0.441; AIC de 204 contra 206 entre dos modelos de ejemplo; rango de 17.80 a 19.20 a 10 días con precio supuesto de 18.50 y volatilidad diaria supuesta de 0.6%). Simulación de un AR(1) para ver cómo se ven la ACF y la PACF, prueba de Dickey Fuller aumentada del precio y de los rendimientos de USD/MXN, ACF y PACF de los rendimientos y de sus cuadrados, prueba de Ljung Box, comparación de modelos ARMA con p y q de 0 a 2 por AIC y BIC, y prueba hacia adelante de un AR(1) con entrenamiento en el 70% más antiguo de los datos y prueba en el 30% más reciente.
-* `clase17_ewma_garch.ipynb`: modelos de volatilidad con `arch`. Ejemplos a mano (EWMA con lambda de 0.94: varianza de 0.295 y volatilidad de 0.543% después de un movimiento de 1.0% con volatilidad previa de 0.5%, y vida media de 11.2 días; GARCH con omega de 0.0072, alfa de 0.08 y beta de 0.90: volatilidad de largo plazo de 0.6%, de 0.715% después de un movimiento de 1.5%, pronósticos de 0.715%, 0.697%, 0.666% y 0.617% a 1, 10, 30 y 100 días, y vida media del choque de 34.3 días; GJR con volatilidad de 0.666% después de un movimiento de más 1.5% y de 0.761% después de uno de menos 1.5%). Con datos reales de USD/MXN de octubre de 2020 a octubre de 2026: EWMA, ventana de 30 días y GARCH(1,1) con t de Student comparados fuera de muestra con QLIKE, prueba de Ljung Box sobre los residuos estandarizados, modelo GJR, comparación fuera de muestra de GARCH contra GJR y pronóstico a 30 días.
-* `clase18_pruebas_multiples.ipynb`: pruebas múltiples con `statsmodels` y `scipy`. Ejemplos a mano (probabilidad de al menos un falso positivo con 20 pruebas de 64.2% y umbral de Bonferroni de 0.0025; con p valores de 0.003, 0.011, 0.020, 0.035 y 0.300, Bonferroni rechaza 1, Holm rechaza 2 y Benjamini Hochberg rechaza 4). Simulación de puro ruido con 1500 días y 300 repeticiones: mejor Sharpe esperado de menos 0.02, 0.78 y 1.03 con 1, 20 y 100 estrategias, y error estándar del Sharpe de 0.41 con 6 años. Con datos reales de USD/MXN: 30 cruces de promedios móviles (rápido de 5, 10, 20, 30 y 40 días, lento de 50, 75, 100, 150, 200 y 250 días) con costo de 1 punto base por cambio de posición, p valores con el 70% más antiguo de los datos con y sin corrección, y evaluación de la ganadora y de toda la familia en el 30% más reciente.
-
-## Qué aprendí
-
-* La volatilidad se anualiza con la raíz de 252 porque la varianza de eventos independientes se suma con el tiempo.
-* El mismo mercado puede verse como excelente o desastroso según la ventana elegida (sesgo de selección). Con ventanas cortas el Sharpe es poco confiable.
-* Restar la tasa libre de riesgo cambia el ratio por completo.
-* La volatilidad viene en rachas: la autocorrelación de los rendimientos es casi cero, pero la de los rendimientos absolutos es claramente positiva. Se puede predecir el tamaño de los movimientos mejor que su dirección.
-* Escalar la posición por volatilidad vuelve más pareja la volatilidad de la estrategia, pero no crea rendimiento.
-* Para evitar look ahead, la posición de hoy debe usar solo información de ayer (`shift(1)`).
-* Los rendimientos tienen colas gordas: 16 días a más de 3 desviaciones contra 3.4 esperados si fuera normal (curtosis en exceso de 3.81).
-* La normal se ve razonable en el centro y en el percentil 1% a la baja, pero subestima la cola de subida. Los días extremos se agrupan en rachas de tormenta.
-* Un VaR normal tiene más error para una posición que para la otra, según hacia dónde mire su cola.
-* Un detalle de código puede mover el resultado más que la estrategia misma: tratar mal los días en que el promedio largo todavía no existe generaba un corto falso al inicio.
-* Para comparar estrategias hay que medirlas en el mismo periodo y fijar la fecha final de los datos, para que los resultados se puedan reproducir.
-* Con un costo supuesto de alrededor de 1 punto base por operación, el costo pesa poco en un cruce de promedios. Quitar costos no crea una ventaja que la señal no tiene.
-* La esperanza de una suma es la suma de las esperanzas, aunque haya dependencia. La varianza de eventos independientes se suma, y la desviación estándar crece con la raíz de n.
-* Una apuesta con ventaja positiva (55% de ganar 1 peso, 45% de perder 1) tuvo esperanza de 10 en 100 apuestas, pero 13.3% de los jugadores simulados terminó en pérdida. La esperanza sola no basta: hay que medir también la dispersión.
-* La probabilidad condicional cambia el universo que se mira: filtrar por una condición modifica la probabilidad. Dos eventos son independientes solo si saber uno no cambia la probabilidad del otro, y no se deben multiplicar probabilidades sin verificarlo.
-* P(A dado B) y P(B dado A) son preguntas distintas con respuestas distintas. Bayes permite voltear la condicional y actualizar una creencia con evidencia nueva.
-* Con una ventaja real (por ejemplo 55% de acierto) y pocas operaciones, perder la mayoría sigue siendo bastante probable: 26% con 10 operaciones.
-* El error estándar del promedio es la desviación estándar entre la raíz de n. Para reducirlo a la décima parte hacen falta 100 veces más datos, y por eso el Sharpe medido en pocos años tiene un margen de error grande.
-* El teorema central del límite hace que los promedios de muchas variables independientes se parezcan a una normal, pero depende de la independencia y converge lento cuando hay colas gordas, así que en mercado funciona solo como aproximación.
-* El p-valor es la probabilidad de ver datos tan buenos como los observados si la hipótesis nula fuera cierta. No es la probabilidad de que la estrategia sirva: confundirlas es el mismo error de P(A dado B) contra P(B dado A).
-* Un intervalo de confianza muestra entre qué valores probablemente está el efecto verdadero. Si incluye el cero, no se puede descartar que no haya ventaja. Con casi seis años de datos, el rendimiento anual de comprar y mantener USD/MXN queda en un rango de aproximadamente menos 10% a 6%, que incluye el cero.
-* Como guía aproximada, el estadístico t de un Sharpe es el Sharpe por la raíz de los años de datos. Con un Sharpe pequeño hacen falta muchos años para tener evidencia.
-* Probar muchas estrategias infla los falsos positivos: con 20 pruebas sin ventaja y corte de 5%, la probabilidad de que al menos una salga significativa por azar es de 64%. Lo relevante no es el p-valor de la ganadora, sino cuántas se probaron.
-* Un juego justo (martingala) no se le gana con ninguna estrategia de apuestas si el capital es finito. Duplicar tras cada pérdida gana poco casi siempre y pierde mucho casi nunca, con esperanza cero.
-* Con una ventaja real, el capital inicial decide el riesgo de ruina: con 55% de acierto y apuestas de una unidad, la ruina eventual es de 13.4% con 10 unidades de capital y de 1.8% con 20. El tamaño de posición pesa tanto como la ventaja.
-* El análisis del primer paso convierte problemas de esperanza en ecuaciones sencillas. Esperar HH toma 6 lanzamientos en promedio y esperar HT toma 4, aunque ambos patrones tengan la misma probabilidad de aparecer en dos lanzamientos.
-* Las variables indicadoras y la linealidad de la esperanza resuelven problemas como el de los sombreros sin calcular distribuciones completas.
-* El rendimiento de un portafolio es el producto punto de los pesos con los rendimientos, y una matriz por el vector de pesos da la serie completa de rendimientos diarios de una sola vez.
-* La varianza de un portafolio depende de las varianzas y de las correlaciones: con correlación 1 no hay diversificación, con correlación 0 la volatilidad de dos activos iguales baja a la raíz de 2 veces menos, y con correlación menos 1 el riesgo puede cancelarse. En forma de matriz es `w @ cov @ w`.
-* Con correlaciones menores que 1, la volatilidad de un portafolio resulta menor que el promedio simple de las volatilidades de sus activos.
-* Un vector propio es una dirección que una matriz solo estira, y el valor propio es el factor de estiramiento. En una matriz de covarianza o correlación, los vectores propios son combinaciones independientes de activos y los valores propios indican cuánta varianza tiene cada una. Los valores propios de una matriz de correlación suman el número de activos.
-* En tres pares de divisas contra el dólar, más de la mitad del movimiento conjunto es un solo factor (56.9%) y dos componentes explican casi 86%, así que agregar más pares contra el dólar diversifica menos de lo que parece.
-* PCA da números y no nombres: el nombre de cada componente sale de leer el patrón de sus pesos (mismo signo, signos opuestos, pesos cerca de cero). Comprobar esa lectura contra combinaciones sencillas de los pares confirma que se leyó bien, pero no prueba la explicación económica.
-* Un componente que parece un contraste entre dos monedas puede estar dominado por una sola. El segundo componente le da el mayor peso al peso mexicano, así que movimientos grandes del peso por su cuenta también lo activan. Descomponer el aporte de cada par en los días extremos permite distinguir un contraste real de un movimiento de una sola moneda.
-* La derivada es la pendiente de una función en un punto, y la delta de una posición es la derivada de su valor respecto al precio. Para encontrar un mínimo se iguala la derivada a cero y se despeja.
-* El portafolio de varianza mínima de dos activos sin correlación, con volatilidades de 10% y 20%, pone 80% en el activo tranquilo y tiene una volatilidad de 8.94%, menor que la del activo más tranquilo por sí solo.
-* Mínimos cuadrados busca la línea que minimiza la suma de los errores al cuadrado. La pendiente mide cuánto cambia una variable por cada unidad que cambia la otra, y la constante es el valor promedio que queda sin explicar por esa pendiente. La pendiente es la covarianza entre ambas dividida entre la varianza de la variable explicativa, o también la correlación por el cociente de volatilidades. Forzar la línea a pasar por el origen cambia la pendiente.
-* El gradiente descendente llega al mínimo caminando en contra de la pendiente. Con una tasa de aprendizaje grande rebota sin llegar, y con una chica avanza muy lento.
-* Una pendiente alta entre dos series dice que se mueven juntas, no que una cause a la otra.
-* Cada punto deja un residuo (el valor real menos el ajustado). Con constante, los residuos suman cero y la línea de mínimos cuadrados minimiza la suma de sus cuadrados. Como los errores van al cuadrado, un solo dato extremo puede mover mucho la línea.
-* El R cuadrado mide qué fracción de los movimientos de la variable explicada queda cubierta por la línea, y con una sola variable explicativa es la correlación al cuadrado. Con rendimientos diarios suele ser bajo, y eso no significa que la relación sea inútil.
-* El estadístico t de la pendiente es la pendiente entre su error estándar, la misma lógica de la clase 9. Con pocos datos el valor crítico es mucho mayor que 2 (con tres puntos es 12.7), y significativo no es lo mismo que importante: con muchos datos una pendiente pequeña puede ser significativa y explicar casi nada.
-* En series de mercado conviene regresar rendimientos y no precios, para evitar relaciones espurias, y usar errores estándar robustos, porque la volatilidad en rachas y las colas gordas vuelven optimistas los errores clásicos.
-* En una regresión múltiple, cada pendiente dice cuánto cambia la variable explicada cuando cambia esa variable y las demás se mantienen fijas, y casi nunca coincide con la pendiente de una regresión sencilla con esa variable sola.
-* La multicolinealidad ocurre cuando dos variables explicativas dicen casi lo mismo: las predicciones pueden seguir bien, pero las pendientes individuales se vuelven inestables y los errores estándar se inflan. El VIF la mide (1 entre 1 menos el R cuadrado de regresar esa variable contra las demás), y arriba de 5 o de 10 hay alerta.
-* Agregar variables siempre sube el R cuadrado de entrenamiento, aunque sean ruido. Con 20 datos y 15 variables de puro ruido se espera un R cuadrado cercano a 0.79 y un R cuadrado ajustado cercano a cero.
-* Ridge y lasso penalizan las pendientes grandes para frenar el sobreajuste: ridge las encoge sin llegar a cero y lasso lleva algunas exactamente a cero. La fuerza de la penalización se elige validando hacia adelante, con el pasado para entrenar y el futuro para probar, y las variables se estandarizan antes de aplicarla.
-* La regularización no crea señal: si las variables no sirven, solo hace que el modelo falle de forma más discreta. Un R cuadrado de prueba negativo significa que el modelo predice peor que el promedio, y es un resultado honesto.
-* Una serie es estacionaria cuando su promedio, su dispersión y su relación con el pasado no cambian con el tiempo. El precio de USD/MXN se comporta como una caminata aleatoria y no lo es, así que se trabaja con los cambios diarios, que ya se acercan a la estacionariedad. Diferenciar de más mete una autocorrelación negativa falsa.
-* La ACF mide la correlación de la serie con su propio pasado, y la PACF hace lo mismo quitando el efecto de los días de en medio. En un AR(1) con phi de 0.5, la ACF decae (0.5, 0.25, 0.125) y la PACF se corta después del primer rezago; en un MA ocurre al revés. Ese patrón sirve para identificar el modelo.
-* Un AR pronostica con el pasado de la serie y su efecto se apaga hacia el promedio (con phi de 0.5, un valor de 2 pronostica 1, 0.5 y 0.25 a uno, dos y tres días), mientras que un MA solo recuerda los sustos de los últimos q días. ARIMA aplica un ARMA después de diferenciar, y el AIC y el BIC comparan modelos penalizando los parámetros extra: la mejora en el ajuste tiene que justificar los parámetros adicionales.
-* La banda de significancia de la autocorrelación (más o menos 1.96 entre la raíz de n) supone datos independientes, algo que los rendimientos con colas gordas y volatilidad en rachas no cumplen del todo, así que sirve como guía aproximada.
-* Para un precio que se comporta como caminata aleatoria, el mejor pronóstico a cualquier plazo es el precio de hoy, y la incertidumbre crece con la raíz del plazo. Ser estacionaria no hace que una serie sea predecible: puede tener muy poca estructura aprovechable.
-* La volatilidad no es constante: viene en rachas y regresa a un nivel normal. EWMA le da más peso a los datos recientes con una memoria que se apaga poco a poco (con lambda de 0.94 la vida media es de 11.2 días), y GARCH añade un nivel de largo plazo al que la volatilidad regresa, omega entre uno menos alfa menos beta.
-* En un GARCH(1,1), alfa mide cuánto reacciona la volatilidad al movimiento de ayer, beta cuánto recuerda de la volatilidad de ayer, y alfa más beta es la persistencia. La vida media de un choque es ln 0.5 entre ln de la persistencia. Con persistencia cercana a 1 los choques duran mucho, y si pasa de 1 no existe un nivel de largo plazo.
-* El pronóstico de GARCH a varios días regresa de forma mecánica al nivel de largo plazo: si la volatilidad de hoy está por debajo, el pronóstico sube. Es un regreso a la media del modelo y no la predicción de un susto, y no dice nada sobre la dirección del precio.
-* En USD/MXN (octubre de 2020 a octubre de 2026), el GARCH(1,1) con t de Student estimado en el 70% más antiguo dio una persistencia de 0.888, una vida media de choques de unos 5.8 días y una volatilidad de largo plazo de 0.741% diaria (alrededor de 11.8% anualizada).
-* Fuera de muestra, GARCH tuvo el mejor QLIKE (menos 0.176) frente a EWMA (menos 0.159) y a la ventana de 30 días (menos 0.069). La ventaja sobre la ventana móvil es clara, pero la diferencia con EWMA es pequeña y no se le hizo una prueba de significancia.
-* Un modelo de volatilidad se evalúa con una pérdida diseñada para varianza (QLIKE), con parámetros estimados solo en el pasado, y se revisan sus residuos: la prueba de Ljung Box sobre los rendimientos al cuadrado dio p cercano a 0 (hay rachas) y sobre los residuos estandarizados al cuadrado dio p de 0.55 (el modelo las captura).
-* Con los datos completos, el modelo GJR da un coeficiente de 0.270 a los días en que el dólar sube y de apenas 0.024 a los días en que baja, así que casi toda la reacción de la volatilidad viene de las alzas del dólar (peso débil). El signo de gamma depende de cómo está cotizado el activo: en USD/MXN, el rendimiento positivo es dólar arriba.
-* Que la asimetría sea significativa dentro de la muestra no garantiza que mejore el pronóstico: fuera de muestra, GJR tuvo un QLIKE de aproximadamente menos 0.17 contra menos 0.176 de GARCH, así que no mejoró. Una característica descriptiva del pasado puede no servir para pronosticar.
-* Con m pruebas independientes sin ventaja real y corte de 5%, la probabilidad de al menos un falso positivo es 1 menos 0.95 elevado a m: 64.2% con 20 pruebas y 92.3% con 50.
-* El mejor Sharpe de puro ruido crece con el número de estrategias probadas: aproximadamente 0.78 con 20 y 1.03 con 100, con cerca de 6 años de datos. El error estándar de un Sharpe anual es 1 entre la raíz de los años (0.41 con 6 años). Un Sharpe sin el conteo de estrategias que se probaron para encontrarlo no se puede interpretar.
-* Bonferroni (corte de alfa entre m) y Holm controlan la probabilidad de cualquier falso positivo, y Holm nunca es peor que Bonferroni. Benjamini Hochberg controla la proporción esperada de descubrimientos falsos entre los declarados y encuentra más. Con los mismos cinco p valores rechazan 1, 2 y 4.
-* Las correcciones suponen pruebas más o menos independientes. Los cruces de promedios móviles comparten mucha información, así que Bonferroni resulta más estricta de lo necesario y el número efectivo de pruebas es menor que 30.
-* En USD/MXN, ninguna de las 30 estrategias pasó el 5% ni siquiera sin corregir (la mejor tuvo p de 0.141 y Sharpe de 0.77 dentro de muestra), así que no hubo nada que corregir. Un Sharpe de 0.77 es del mismo orden que el que daría el azar al elegir la mejor entre 30 estrategias sin ventaja (aproximadamente 1 con unos 3.5 años de datos, estimación aproximada porque las 30 no son independientes).
-* La ganadora dentro de muestra (cruce 40/75) tuvo Sharpe de 0.77 dentro y 0.51 fuera. No se desplomó, pero con un periodo de prueba de alrededor de año y medio el error estándar del Sharpe es de unos 0.8, así que 0.51 no se distingue de cero.
-* 25 de las 30 estrategias tuvieron Sharpe positivo fuera de muestra (promedio de 0.29, contra 0.08 dentro). Pero las 30 son muy parecidas entre sí, no son 30 pruebas independientes, y un solo tramo favorable del mercado puede hacer que muchas salgan positivas a la vez, así que no es evidencia de una ventaja.
-* Una señal pasa por un ciclo de vida: hipótesis con razón económica, prueba dentro de muestra contando todas las variantes, corrección por pruebas múltiples, prueba fuera de muestra, paper trading, tamaño chico y monitoreo del deterioro. Llevar el registro de todo lo que se prueba es parte del resultado.
-
-## Conclusión de la clase 14
-
-La regresión lineal ajusta la línea que minimiza la suma de los errores al cuadrado. La pendiente dice cuánto se mueve y cuando se mueve x, y la constante (el alfa) es lo que queda sin explicar por esa relación. Cada punto deja un residuo, y el R cuadrado mide qué fracción de los movimientos explica la línea, que con rendimientos diarios suele ser baja. Para saber si la pendiente o la constante se distinguen de cero se usa el estadístico t, la misma lógica de la clase 9, pero con pocos datos el corte de 2 no vale, y con series de mercado conviene regresar rendimientos y usar errores robustos, porque la volatilidad en rachas y las colas gordas vuelven optimistas los errores clásicos. Significativo no es lo mismo que importante, y una pendiente alta dice que dos series se mueven juntas, no que una cause a la otra.
-
-## Conclusión de la clase 15
-
-La regresión múltiple explica una variable con varias a la vez, y cada pendiente se lee manteniendo las demás fijas. Cuando dos variables explicativas se parecen demasiado, aparece la multicolinealidad: las predicciones pueden seguir bien, pero las pendientes individuales se vuelven inestables y sus errores estándar crecen, algo que el VIF permite medir. Agregar variables siempre mejora el ajuste dentro de la muestra, aunque sean puro ruido, así que el R cuadrado de entrenamiento engaña y hay que mirar el ajustado y, sobre todo, el desempeño hacia adelante. Ridge y lasso frenan el sobreajuste penalizando las pendientes grandes, con ridge encogiéndolas y lasso llevando algunas a cero, pero no crean señal donde no la hay. Con series de mercado, la penalización se elige entrenando con el pasado y probando con el futuro, y probar muchos modelos para quedarse con el mejor reintroduce el sesgo de selección.
-
-## Conclusión de la clase 16
-
-Las series de tiempo se estudian después de volverlas estacionarias: el precio de USD/MXN deriva como una caminata aleatoria, así que se analizan sus cambios diarios, que ya se acercan a un nivel estable. La autocorrelación (ACF) y la autocorrelación parcial (PACF) miden la memoria de la serie, y el patrón de cuál decae poco a poco y cuál se corta en cierto rezago sugiere si conviene un modelo AR, uno MA o una mezcla. ARIMA combina esos modelos con la diferenciación, y el AIC y el BIC ayudan a elegir entre ellos castigando los parámetros innecesarios. En rendimientos diarios de divisas la memoria suele ser mínima, y estar dentro de una banda de significancia no garantiza que una predicción sirva después de costos, mientras que la dispersión de los rendimientos sí tiene estructura, algo que se modela con GARCH. Probar varios modelos y quedarse con el de mejor ajuste vuelve a introducir el sesgo de selección, y la banda de significancia y las pruebas de residuos son aproximadas cuando hay colas gordas y volatilidad en rachas.
-
-## Conclusión de la clase 17
-
-La volatilidad de USD/MXN se agrupa en rachas: la prueba de Ljung Box sobre los rendimientos al cuadrado rechaza la ausencia de estructura (p cercano a 0), y después de ajustar un GARCH(1,1) con t de Student los residuos estandarizados ya no la muestran (p de 0.55). Fuera de muestra, GARCH tuvo el mejor QLIKE (menos 0.176) frente a EWMA (menos 0.159) y a la ventana de 30 días (menos 0.069). La ventaja sobre la ventana móvil es clara, y la diferencia con EWMA es pequeña y no se probó su significancia. La persistencia estimada es de 0.89, con una vida media de choques de unos 6 días. El modelo GJR con la muestra completa sugiere una asimetría marcada, con las alzas del dólar elevando la volatilidad mucho más que las bajas, pero esa asimetría no mejoró el pronóstico fuera de muestra (QLIKE de aproximadamente menos 0.17 contra menos 0.176 de GARCH). El pronóstico de GARCH regresa al nivel de largo plazo por construcción y sirve para dimensionar riesgo, no para decidir la dirección de una operación.
-
-## Conclusión de la clase 18
-
-Probar muchas estrategias y quedarse con la mejor infla los resultados: con 20 pruebas sin ventaja hay 64.2% de probabilidad de que al menos una parezca significativa, y el mejor Sharpe esperado por puro azar es de aproximadamente 0.78 con 20 estrategias y 1.03 con 100. Las correcciones de Bonferroni, Holm y Benjamini Hochberg ajustan los p valores según el número de pruebas, con distinto grado de rigor, y todas suponen pruebas más o menos independientes. Con una familia de 30 cruces de promedios móviles de USD/MXN, ninguna pasó el 5% ni siquiera sin corregir, así que el resultado es que no hay evidencia de ventaja. La ganadora dentro de muestra (Sharpe de 0.77) tuvo 0.51 fuera de muestra, y 25 de las 30 estrategias salieron positivas fuera de muestra, pero las estrategias están muy correlacionadas, el periodo de prueba es corto y la incertidumbre del Sharpe es grande, así que eso no se interpreta como una ventaja. Un resultado se interpreta junto con el número de pruebas que se hicieron para encontrarlo.
-
-## Resultados de la clase 5
-
-Periodo del 7 de octubre de 2020 al 21 de octubre de 2026, con costo supuesto de alrededor de 1 punto base por operación.
-
-| Estrategia | Rendimiento anual | Sharpe | Caída máxima | Cambios de posición |
-|---|---|---|---|---|
-| Comprar y mantener | menos 1.8% | menos 0.17 | menos 24.9% | 0 |
-| Cruce 10/50 | menos 4.4% | menos 0.41 | menos 36.0% | 60 |
-| Cruce 20/100 | 0.3% | 0.03 | menos 24.4% | 22 |
-| Cruce 50/200 | 0.3% | 0.03 | menos 22.6% | 8 |
-
-Ninguna combinación muestra una ventaja demostrable. El cruce 10/50 pierde en las dos mitades del periodo. Los Sharpe de 20/100 y 50/200 son casi cero y cambian de signo entre mitades, así que son ruido.
-
-## Resultados de la clase 12
-
-PCA sobre la matriz de correlación de los rendimientos diarios de USD/MXN, USD/JPY y USD/EUR (cotizado como dólares por euro invertido, para que los tres sean unidades de moneda extranjera por dólar), del 7 de octubre de 2020 al 21 de octubre de 2026. El signo global de cada componente es arbitrario.
-
-| Componente | Varianza explicada | Peso EUR | Peso JPY | Peso MXN | Lectura |
-|---|---|---|---|---|---|
-| 1 | 56.9% | menos 0.67 | menos 0.56 | menos 0.49 | Factor dólar: los tres pares se mueven juntos |
-| 2 | 28.8% | menos 0.05 | menos 0.63 | 0.78 | Contraste entre peso y yen, dominado por el peso, con el euro casi fuera |
-| 3 | 14.3% | menos 0.74 | 0.54 | 0.39 | Euro contra yen y peso |
-
-El puntaje diario del primer componente tiene una correlación de menos 1.0 (el signo es arbitrario) con el promedio de los tres pares estandarizados, y el del segundo tiene 0.99 con la diferencia entre el peso y el yen. Esto confirma la lectura de los pesos, pero no prueba la explicación económica de los componentes.
-
-Los ocho días con mayor valor absoluto del segundo componente son el 5 de agosto de 2024, el 4 de junio de 2024, el 14 de marzo de 2023, el 7 y 11 de abril de 2025, el 4 de febrero de 2025, el 9 de agosto de 2024 y el 10 de abril de 2025. Las fechas se asociaron con episodios de estrés de mercado a partir de memoria y no se contrastaron con una fuente de noticias. En 7 de los 8 días el peso y el yen se movieron en direcciones opuestas, y en 5 el yen aportó una parte importante del valor. En los otros 3 (4 de junio de 2024, 7 de abril de 2025 y 4 de febrero de 2025) el valor lo explica sobre todo el peso. El componente es por tanto un contraste entre peso y yen dominado por el peso, y la explicación económica (aversión al riesgo) sigue siendo una hipótesis.
-
-## Resultados de la clase 17
-
-Rendimientos diarios de USD/MXN en porcentaje, del 7 de octubre de 2020 al 21 de octubre de 2026. Los modelos se estimaron con el 70% más antiguo de los datos y se evaluaron en el 30% más reciente con parámetros fijos.
-
-GARCH(1,1) con t de Student, estimado en el 70% más antiguo:
-
-| Parámetro | Valor |
-|---|---|
-| Omega | 0.0616 |
-| Alfa | 0.1875 |
-| Beta | 0.7002 |
-| Grados de libertad de la t | 6.29 |
-| Persistencia (alfa más beta) | 0.888 |
-| Volatilidad diaria de largo plazo | 0.741% |
-
-Evaluación en el 30% más reciente:
-
-| Modelo | QLIKE (menor es mejor) | Correlación con r al cuadrado | Desviación estándar de r entre volatilidad prevista |
+| Bloque | Clases | Temas | Detalle |
 |---|---|---|---|
-| EWMA (lambda de 0.94) | menos 0.159 | 0.204 | 1.054 |
-| Ventana de 30 días | menos 0.069 | 0.149 | 1.121 |
-| GARCH(1,1) | menos 0.176 | 0.267 | 0.889 |
+| 1 | 1 a 5 | Rendimientos, volatilidad, colas gordas y cruce de promedios | [docs/01_volatilidad_y_estrategias.md](docs/01_volatilidad_y_estrategias.md) |
+| 2 | 6 a 10 | Probabilidad, Bayes, distribuciones, pruebas de hipótesis y problemas de entrevista | [docs/02_probabilidad_e_inferencia.md](docs/02_probabilidad_e_inferencia.md) |
+| 3 | 11 a 16 | Álgebra lineal, PCA, cálculo, regresión y series de tiempo | [docs/03_algebra_calculo_regresion_series.md](docs/03_algebra_calculo_regresion_series.md) |
+| 4 | 17 a 19 | EWMA y GARCH, pruebas múltiples y validación hacia adelante | [docs/04_volatilidad_y_validacion.md](docs/04_volatilidad_y_validacion.md) |
 
-GARCH sobreestimó ligeramente el riesgo en el periodo de prueba (0.889) y EWMA lo subestimó ligeramente (1.054). La prueba de Ljung Box con 10 rezagos dio p cercano a 0 para los rendimientos al cuadrado y p de 0.55 para los residuos estandarizados al cuadrado.
+## Notebooks
 
-GJR con la muestra completa: alfa de 0.2697, gamma de menos 0.2458, beta de 0.7480 y t con 5.82 grados de libertad. El coeficiente es de 0.270 para los días en que el dólar sube y de 0.024 (alfa más gamma) para los días en que baja. En la evaluación fuera de muestra, el QLIKE de GJR fue de aproximadamente menos 0.17 contra menos 0.176 de GARCH, así que la asimetría no mejoró el pronóstico.
+| Clase | Notebook | Tema |
+|---|---|---|
+| 1 | `clase1_usdmxn_volatilidad.ipynb` | Rendimientos, volatilidad y anualización |
+| 2 | `clase2_funciones_ciclos.ipynb` | Funciones, ciclos y tasa libre de riesgo |
+| 3 | `clase3_graficas_distribucion.ipynb` | Gráficas, volatilidad móvil y dimensionamiento por volatilidad |
+| 4 | `clase4_normal_colas_gordas.ipynb` | Normal, curtosis y colas gordas |
+| 5 | `clase5_cruce_promedios.ipynb` | Cruce de promedios móviles con costos |
+| 6 | `clase6_esperanza_varianza.ipynb` | Esperanza y varianza (didáctica) |
+| 7 | `clase7_condicional_bayes.ipynb` | Probabilidad condicional y Bayes (didáctica) |
+| 8 | `clase8_distribuciones_tcl.ipynb` | Binomial, ley de los grandes números y TCL (didáctica) |
+| 9 | `clase9_hipotesis_confianza.ipynb` | Pruebas de hipótesis e intervalos de confianza |
+| 10 | `clase10_probabilidad_entrevistas.ipynb` | Problemas de probabilidad de entrevista (didáctica) |
+| 11 | `clase11_algebra_lineal.ipynb` | Portafolios con álgebra lineal |
+| 12 | `clase12_valores_propios_pca.ipynb` | Valores propios y PCA |
+| 13 | `clase13_calculo_optimizacion.ipynb` | Derivadas, varianza mínima y gradiente descendente |
+| 14 | `clase14_regresion_lineal.ipynb` | Regresión lineal y errores robustos |
+| 15 | `clase15_regresion_multiple_regularizacion.ipynb` | Regresión múltiple, ridge y lasso |
+| 16 | `clase16_series_de_tiempo.ipynb` | Estacionariedad, ACF, PACF y ARMA |
+| 17 | `clase17_ewma_garch.ipynb` | EWMA, GARCH y GJR |
+| 18 | `clase18_pruebas_multiples.ipynb` | Pruebas múltiples y falsos positivos |
+| 19 | `clase19_walk_forward.ipynb` | Validación hacia adelante (walk forward) |
 
-Pronóstico de GARCH desde el último día de la muestra: volatilidad diaria de 0.556%, 0.650% y 0.724% a 1, 10 y 30 días (alrededor de 8.8%, 10.3% y 11.5% anualizada), que sube porque la volatilidad de hoy está por debajo de su nivel de largo plazo.
+## Lo más importante que encontré
 
-## Resultados de la clase 18
+* Los rendimientos de USD/MXN tienen colas gordas: 16 días a más de 3 desviaciones contra 3.4 esperados si fuera normal (curtosis en exceso de 3.81).
+* Más de la mitad del movimiento conjunto de USD/MXN, USD/JPY y USD/EUR es un solo factor dólar (56.9% en el primer componente del PCA).
+* La volatilidad se agrupa en rachas y un GARCH(1,1) con t de Student las captura: los residuos estandarizados al cuadrado ya no muestran autocorrelación (Ljung Box, p de 0.55). Fuera de muestra, GARCH tuvo el mejor QLIKE, aunque su ventaja sobre EWMA es pequeña.
+* No encontré una estrategia de cruce de promedios con ventaja demostrable. Con una familia de 30 cruces, ninguna pasó el 5% ni siquiera sin corregir por pruebas múltiples.
+* En la validación hacia adelante, elegir con el Sharpe pasado no le ganó al promedio de la familia: con 12 pliegues, la elegida pasó de un Sharpe de 1.15 dentro de muestra a menos 0.06 fuera, contra 0.19 del promedio de las 30.
 
-Treinta cruces de promedios móviles de USD/MXN (rápido de 5, 10, 20, 30 y 40 días, lento de 50, 75, 100, 150, 200 y 250 días), con costo supuesto de 1 punto base por cambio de posición, todas sobre el mismo periodo. El p valor es de una prueba t de que el rendimiento diario promedio es cero, calculado con el 70% más antiguo de los datos. El Sharpe es anualizado, sin restar tasa libre.
+## Cómo correr los notebooks
 
-Las cinco mejores por Sharpe dentro de muestra:
+1. Abre el notebook en Google Colab.
+2. Si usa `arch` (clase 17), agrega `!pip install arch` en la primera celda.
+3. Usa "Reiniciar sesión y ejecutar todo" para evitar celdas fuera de orden.
+4. Los datos se descargan de Yahoo Finance con `yfinance`, así que los números pueden cambiar un poco si Yahoo corrige datos históricos.
 
-| Rápido | Lento | Sharpe dentro | p valor sin corregir | Sharpe fuera |
-|---|---|---|---|---|
-| 40 | 75 | 0.77 | 0.141 | 0.51 |
-| 30 | 75 | 0.71 | 0.174 | 0.22 |
-| 40 | 100 | 0.36 | 0.490 | 0.82 |
-| 40 | 50 | 0.29 | 0.576 | 0.05 |
-| 30 | 100 | 0.29 | 0.578 | 0.96 |
-
-El p valor corregido de las cinco fue de 1.0 con Bonferroni y con Holm, y de 0.995 con Benjamini Hochberg. Cuántas pasan el 5% con el 70% más antiguo de los datos: 0 sin corregir, 0 con Bonferroni, 0 con Holm y 0 con Benjamini Hochberg.
-
-La ganadora dentro de muestra (cruce 40/75) tuvo Sharpe de 0.77 dentro y de 0.51 fuera. El Sharpe promedio de las 30 estrategias fue de 0.08 dentro y de 0.29 fuera de muestra, y 25 de las 30 tuvieron Sharpe fuera de muestra mayor que cero. Las estrategias mejor posicionadas dentro de muestra no fueron las mejores fuera: por ejemplo, el cruce 30/100 tuvo el mayor Sharpe fuera de muestra de las cinco (0.96) con un Sharpe dentro de apenas 0.29.
-
-Referencia de pura simulación (1500 días, 300 repeticiones, volatilidad diaria de 0.6%): mejor Sharpe esperado de menos 0.02, 0.78 y 1.03 con 1, 20 y 100 estrategias sin ventaja.
-
-## Limitaciones
+## Limitaciones generales
 
 * No hay una estrategia con ventaja demostrada. Los resultados son de aprendizaje.
-* No incluye carry (diferencial de tasas). Las pruebas fuera de muestra son de una sola partición. El costo de operación es un supuesto simple y fijo.
-* El Sharpe medido en pocos años tiene un margen de error amplio, así que diferencias pequeñas entre versiones no son concluyentes.
-* La volatilidad móvil de 30 días reacciona con retraso y el escalado usa un tope de 2x.
-* Con solo 16 días extremos, la asimetría de las colas es una pista y no una prueba.
-* Se probaron solo tres combinaciones de ventanas. Buscar la mejor entre muchas llevaría a sobreajuste.
-* Las clases 6, 7, 8 y 10 son ejercicios didácticos. Las simulaciones usan semilla fija y el ejemplo de noticias y movimientos de la clase 7 son 100 días hipotéticos, no datos reales de mercado.
-* En la clase 9, el intervalo de confianza y el estadístico t suponen rendimientos independientes. Eso no se cumple del todo en USD/MXN por la volatilidad en rachas, así que son una aproximación.
-* Antes de la clase 18 no se aplicaba una corrección por pruebas múltiples, solo se ilustraba el problema. En la clase 18 se aplicó a una sola familia de 30 estrategias, y las pruebas de las clases anteriores no están corregidas.
-* Los modelos de ruina de la clase 10 suponen apuestas independientes de tamaño fijo y probabilidad constante, algo que los mercados no cumplen de forma estricta.
-* En la clase 11, la matriz de covarianza se estima con datos históricos y supone que las correlaciones son estables. En épocas de estrés las correlaciones suelen subir, así que la diversificación observada en periodos tranquilos puede sobrestimar la real. Los tres pares de divisas son un ejemplo didáctico de pocos activos y no un portafolio optimizado.
-* En la clase 12, el PCA usa solo tres activos y un periodo específico, así que los componentes pueden cambiar con otros pares o con otras fechas. La comprobación de correlación casi perfecta es parcialmente circular, porque los componentes se construyen con los mismos tres pares. La lectura del segundo componente como aversión al riesgo es una hipótesis: las fechas extremas coinciden con episodios de estrés, pero no se verificaron con fuentes y en 3 de los 8 días el valor lo explica sobre todo el peso. Las fechas de Yahoo Finance pueden desfasarse respecto a la fecha del evento, así que la asociación con eventos es aproximada. El tercer componente explica poco y puede mezclar factores específicos con ruido. Como se usó la matriz de correlación, los porcentajes hablan de movimiento compartido y no de la varianza de un portafolio concreto.
-* En la clase 13, los ejemplos de mínimos cuadrados usan tres puntos inventados para ilustrar el método y no dicen nada sobre mercados. El portafolio de varianza mínima usa volatilidades y correlación supuestas, y con datos reales dependería de una matriz de covarianza estimada con error.
-* En la clase 14, el ejemplo de tres puntos es inventado y su inferencia tiene un solo grado de libertad. La regresión con datos reales es de una sola variable, supone una relación lineal y estable en el tiempo, y no se corrigió por cambios de régimen. Los errores estándar robustos corrigen en parte la volatilidad en rachas, pero no resuelven todos los problemas de los supuestos. Los resultados numéricos de la regresión de USD/MXN contra USD/JPY todavía no se incluyen en este README. La pendiente mide qué tanto se mueven juntos los dos pares y no causalidad.
-* En la clase 15, los ejemplos de ridge y lasso usan tres puntos inventados y una penalización escrita de forma sencilla, y `scikit-learn` escala la penalización de otra manera, así que sus números no coinciden con los del ejemplo a mano. La regresión múltiple con datos reales usa cinco pares de divisas elegidos por conveniencia, sin pruebas formales de variables omitidas ni de estabilidad de las pendientes. La división de 70% y 30% es una sola partición, sin validación en varios periodos, y la elección de la penalización con pocos pliegues temporales es ruidosa. Los resultados numéricos con datos reales todavía no se incluyen en este README.
-* En la clase 16, los ejemplos de ACF, PACF, MA, AIC y el rango a 10 días usan datos o parámetros inventados para ilustrar el método. La banda de significancia, la prueba de Ljung Box y la prueba de Dickey Fuller suponen condiciones que los rendimientos con colas gordas y volatilidad en rachas no cumplen del todo, así que sus resultados son aproximados. La comparación de modelos ARMA con p y q de 0 a 2 es una búsqueda entre nueve modelos y elegir el mejor introduce sesgo de selección, y la prueba hacia adelante del AR(1) usa una sola partición de 70% y 30%. Los resultados numéricos con datos reales todavía no se incluyen en este README.
-* En la clase 17, los ejemplos a mano usan parámetros inventados. Los parámetros reales vienen de una sola partición de 70% y 30%, y el 30% de prueba es un solo periodo con su propio nivel de volatilidad, por lo que GARCH sobreestimó el riesgo ahí porque su nivel de largo plazo viene de una época más agitada. La diferencia de QLIKE entre GARCH y EWMA es pequeña y no se probó su significancia (por ejemplo con una prueba de Diebold Mariano). La comparación entre GARCH y GJR muestra solo un valor aproximado y una sola partición. El GJR de la muestra completa mezcla datos de entrenamiento y de prueba, y su asimetría es sensible a pocos días extremos, de los cuales los diez mayores (de 2.4% a 4.3% en valor absoluto) no parecen errores de datos pero no se contrastaron con otra fuente. El pronóstico regresa al nivel de largo plazo por construcción y no anticipa cambios de régimen. La distribución t y la especificación GARCH(1,1) son supuestos, y no se probaron otras (EGARCH, más rezagos). Los modelos de volatilidad no dicen nada sobre la dirección del precio.
-* En la clase 18, los p valores de ejemplo son inventados y las correcciones suponen pruebas más o menos independientes, algo que no se cumple en 30 cruces de promedios que comparten información, así que Bonferroni y Holm son más estrictas de lo necesario y el número efectivo de pruebas es menor que 30. La familia de 30 combinaciones la elegí yo de forma arbitraria, y el número real de variantes probadas a lo largo del proyecto (incluidas las de la clase 5) es mayor, lo que haría la corrección más estricta. La prueba t supone rendimientos independientes, algo que la volatilidad en rachas no cumple del todo. Hay una sola partición de 70% y 30%, el periodo de prueba es corto y el error estándar del Sharpe ahí es grande (del orden de 0.8), así que el Sharpe fuera de muestra de la ganadora (0.51) no se distingue estadísticamente de cero. Que 25 de 30 estrategias salgan positivas fuera de muestra no es evidencia de ventaja, porque las estrategias están muy correlacionadas y un mismo tramo del mercado las afecta a todas a la vez. El Sharpe es simple, sin tasa libre de riesgo, y el costo de 1 punto base es un supuesto. Los resultados son descriptivos y no una estrategia lista para operar.
+* Las pruebas fuera de muestra son de una sola partición o de pocas ventanas, y los periodos de prueba son cortos, así que el Sharpe tiene un margen de error grande.
+* Casi todas las pruebas de las primeras clases no están corregidas por pruebas múltiples.
+* Las clases 6, 7, 8 y 10 son ejercicios didácticos sin datos de mercado.
+* Las limitaciones detalladas de cada clase están en los documentos de `docs/`.
 
 ## Próximos pasos
 
-Validación hacia adelante (walk forward) con varias ventanas y backtesting fuera de muestra más sólido.
+Optimización de portafolios con restricciones (incluidas las soluciones de esquina, donde el óptimo queda pegado a un límite) y backtesting más sólido.
 
 ## Aviso
 
