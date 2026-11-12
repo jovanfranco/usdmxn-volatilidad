@@ -1,6 +1,6 @@
 # USD/MXN y fundamentos cuantitativos con Python
 
-Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística, álgebra lineal, cálculo, regresión, series de tiempo, modelos de volatilidad, control de pruebas múltiples y validación hacia adelante que hay detrás.
+Proyecto de aprendizaje en finanzas cuantitativas. Analiza el tipo de cambio USD/MXN con datos públicos de mercado (Yahoo Finance) y practica los fundamentos de probabilidad, estadística, álgebra lineal, cálculo, regresión, series de tiempo, modelos de volatilidad, control de pruebas múltiples, validación hacia adelante y optimización de portafolios que hay detrás.
 
 Cada clase es un notebook de Python (Google Colab). Este README es un resumen; el detalle de cada bloque (qué aprendí, resultados y limitaciones) está en la carpeta `docs/`.
 
@@ -12,6 +12,7 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 | 2 | 6 a 10 | Probabilidad, Bayes, distribuciones, pruebas de hipótesis y problemas de entrevista | [docs/02_probabilidad_e_inferencia.md](docs/02_probabilidad_e_inferencia.md) |
 | 3 | 11 a 16 | Álgebra lineal, PCA, cálculo, regresión y series de tiempo | [docs/03_algebra_calculo_regresion_series.md](docs/03_algebra_calculo_regresion_series.md) |
 | 4 | 17 a 19 | EWMA y GARCH, pruebas múltiples y validación hacia adelante | [docs/04_volatilidad_y_validacion.md](docs/04_volatilidad_y_validacion.md) |
+| 5 | 20 | Portafolios de mínima varianza y soluciones de esquina | [docs/05_portafolios_y_optimizacion.md](docs/05_portafolios_y_optimizacion.md) |
 
 ## Notebooks
 
@@ -36,6 +37,7 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 | 17 | `clase17_ewma_garch.ipynb` | EWMA, GARCH y GJR |
 | 18 | `clase18_pruebas_multiples.ipynb` | Pruebas múltiples y falsos positivos |
 | 19 | `clase19_walk_forward.ipynb` | Validación hacia adelante (walk forward) |
+| 20 | `clase20_portafolios_esquina.ipynb` | Portafolios de mínima varianza con restricciones |
 
 ## Lo más importante que encontré
 
@@ -44,6 +46,7 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 * La volatilidad se agrupa en rachas y un GARCH(1,1) con t de Student las captura: los residuos estandarizados al cuadrado ya no muestran autocorrelación (Ljung Box, p de 0.55). Fuera de muestra, GARCH tuvo el mejor QLIKE, aunque su ventaja sobre EWMA es pequeña.
 * No encontré una estrategia de cruce de promedios con ventaja demostrable. Con una familia de 30 cruces, ninguna pasó el 5% ni siquiera sin corregir por pruebas múltiples.
 * En la validación hacia adelante, elegir con el Sharpe pasado no le ganó al promedio de la familia: con 12 pliegues, la elegida pasó de un Sharpe de 1.15 dentro de muestra a menos 0.06 fuera, contra 0.19 del promedio de las 30.
+* Con seis pares de divisas contra el dólar, un portafolio de mínima varianza tuvo volatilidad realizada fuera de muestra de 5.4%, contra 6.1% de pesos iguales, pero concentró casi la mitad en USD/CAD, y al prohibir las ventas en corto 2 de 6 pesos quedaron en cero (solución de esquina). Es una sola partición, así que la diferencia es una pista y no una prueba.
 
 ## Cómo correr los notebooks
 
@@ -55,14 +58,14 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 ## Limitaciones generales
 
 * No hay una estrategia con ventaja demostrada. Los resultados son de aprendizaje.
-* Las pruebas fuera de muestra son de una sola partición o de pocas ventanas, y los periodos de prueba son cortos, así que el Sharpe tiene un margen de error grande.
+* Las pruebas fuera de muestra son de una sola partición o de pocas ventanas, y los periodos de prueba son cortos, así que el Sharpe y las volatilidades tienen un margen de error grande.
 * Casi todas las pruebas de las primeras clases no están corregidas por pruebas múltiples.
 * Las clases 6, 7, 8 y 10 son ejercicios didácticos sin datos de mercado.
 * Las limitaciones detalladas de cada clase están en los documentos de `docs/`.
 
 ## Próximos pasos
 
-Optimización de portafolios con restricciones (incluidas las soluciones de esquina, donde el óptimo queda pegado a un límite) y backtesting más sólido.
+Markowitz completo con rendimientos esperados y encogimiento de la covarianza (shrinkage), y backtesting más sólido con rebalanceo periódico y costos.
 
 ## Aviso
 
