@@ -12,7 +12,7 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 | 2 | 6 a 10 | Probabilidad, Bayes, distribuciones, pruebas de hipótesis y problemas de entrevista | [docs/02_probabilidad_e_inferencia.md](docs/02_probabilidad_e_inferencia.md) |
 | 3 | 11 a 16 | Álgebra lineal, PCA, cálculo, regresión y series de tiempo | [docs/03_algebra_calculo_regresion_series.md](docs/03_algebra_calculo_regresion_series.md) |
 | 4 | 17 a 19 | EWMA y GARCH, pruebas múltiples y validación hacia adelante | [docs/04_volatilidad_y_validacion.md](docs/04_volatilidad_y_validacion.md) |
-| 5 | 20 y 21 | Portafolios de mínima varianza, soluciones de esquina, máximo Sharpe y shrinkage | [docs/05_portafolios_y_optimizacion.md](docs/05_portafolios_y_optimizacion.md) |
+| 5 | 20 a 22 | Portafolios de mínima varianza, máximo Sharpe, shrinkage y posiciones largas y cortas con volatilidad objetivo | [docs/05_portafolios_y_optimizacion.md](docs/05_portafolios_y_optimizacion.md) |
 
 ## Notebooks
 
@@ -39,6 +39,7 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 | 19 | `clase19_walk_forward.ipynb` | Validación hacia adelante (walk forward) |
 | 20 | `clase20_portafolios_esquina.ipynb` | Portafolios de mínima varianza con restricciones |
 | 21 | `clase21_markowitz_shrinkage.ipynb` | Máximo Sharpe, error de estimación y shrinkage |
+| 22 | `clase22_largo_corto_vol_objetivo.ipynb` | Posiciones largas y cortas con volatilidad objetivo |
 
 ## Lo más importante que encontré
 
@@ -48,7 +49,8 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 * No encontré una estrategia de cruce de promedios con ventaja demostrable. Con una familia de 30 cruces, ninguna pasó el 5% ni siquiera sin corregir por pruebas múltiples.
 * En la validación hacia adelante, elegir con el Sharpe pasado no le ganó al promedio de la familia: con 12 pliegues, la elegida pasó de un Sharpe de 1.15 dentro de muestra a menos 0.06 fuera, contra 0.19 del promedio de las 30.
 * Con seis pares de divisas contra el dólar, un portafolio de mínima varianza tuvo volatilidad realizada fuera de muestra de 5.4%, contra 6.1% de pesos iguales, pero concentró casi la mitad en USD/CAD, y al prohibir las ventas en corto 2 de 6 pesos quedaron en cero (solución de esquina). Es una sola partición, así que la diferencia es una pista y no una prueba.
-* Un optimizador de máximo Sharpe sin encoger los rendimientos puso 93.5% en USD/JPY y pasó de un Sharpe de 1.03 dentro de muestra a 0.01 fuera. Los rendimientos esperados se estiman con mucho más error que la covarianza, y en una simulación ningún método ganó siempre: pesos iguales venció a los optimizadores cuando los activos eran parecidos, y los optimizadores vencieron cuando eran muy distintos.
+* Un optimizador de máximo Sharpe sin encoger los rendimientos puso 93.5% en USD/JPY y pasó de un Sharpe de 1.03 dentro de muestra a 0.01 fuera. Los rendimientos esperados se estiman con mucho más error que la covarianza, y en una simulación ningún método ganó siempre.
+* Con posiciones largas y cortas y una volatilidad objetivo de 8%, que es la formulación natural en divisas, la volatilidad objetivo se cumplió dentro de muestra y fuera quedó entre 7.3% y 7.6%. El Sharpe fuera de muestra de las cuatro carteras fue de menos 0.61 a 0.08, con un error estándar de 0.73, así que no hay evidencia de que una supere a otra, y el largo y corto usó 2.3 veces de exposición bruta.
 
 ## Cómo correr los notebooks
 
@@ -62,13 +64,13 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 * No hay una estrategia con ventaja demostrada. Los resultados son de aprendizaje.
 * Las pruebas fuera de muestra son de una sola partición o de pocas ventanas, y los periodos de prueba son cortos, así que el Sharpe y las volatilidades tienen un margen de error grande.
 * Casi todas las pruebas de las primeras clases no están corregidas por pruebas múltiples.
-* Los rendimientos de las carteras de las clases 20 y 21 son solo de precio, sin carry (diferencial de tasas), que en divisas es una parte grande del rendimiento.
+* Los rendimientos de las carteras de las clases 20 a 22 son solo de precio, sin carry (diferencial de tasas), que en divisas es una parte grande del rendimiento, y sin costos de operación.
 * Las clases 6, 7, 8 y 10 son ejercicios didácticos sin datos de mercado.
 * Las limitaciones detalladas de cada clase están en los documentos de `docs/`.
 
 ## Próximos pasos
 
-Incorporar el carry con las tasas históricas reales y una formulación de posiciones largas y cortas con volatilidad objetivo, elegir el parámetro de encogimiento con validación hacia adelante, y backtesting más sólido con rebalanceo periódico y costos.
+Incorporar el carry con las tasas históricas reales, elegir el parámetro de encogimiento con validación hacia adelante, y backtesting más sólido con rebalanceo periódico y costos.
 
 ## Aviso
 
