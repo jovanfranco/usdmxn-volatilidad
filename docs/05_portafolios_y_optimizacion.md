@@ -1,4 +1,4 @@
-# Bloque 5: Portafolios y optimización (clases 20 y 21)
+# Bloque 5: Portafolios y optimización (clases 20 a 22)
 
 [Volver al README](../README.md)
 
@@ -9,11 +9,13 @@
 * Compara cinco carteras de seis pares de divisas contra el dólar (pesos iguales, inverso de la volatilidad, mínima varianza libre, mínima varianza solo largo y solo largo con tope de 40%), estimando la covarianza con el 70% más antiguo de los datos y midiendo la volatilidad realizada en el 30% más reciente.
 * Construye el portafolio de máximo Sharpe y la frontera eficiente, muestra con ejemplos cómo cambian los pesos por pequeños errores en los rendimientos esperados, y simula con 300 repeticiones cuánto daña el error de estimación a distintas carteras cuando se conocen los parámetros verdaderos.
 * Aplica shrinkage (encogimiento) a la covarianza con Ledoit Wolf y a los rendimientos esperados hacia su promedio, y compara cuatro carteras de seis pares de divisas con datos reales, estimando con el 70% más antiguo de los datos y evaluando en el 30% más reciente.
+* Construye carteras largas y cortas para seis pares de divisas contra el dólar, con pesos proporcionales a la inversa de la covarianza por los rendimientos esperados, escalados a una volatilidad objetivo de 8% en lugar de pesos que suman 1, y compara cuatro carteras con 70% de entrenamiento y 30% de prueba. No incluye carry.
 
 ## Contenido
 
 * `clase20_portafolios_esquina.ipynb`: optimización de portafolios con `numpy` y `scipy`. Ejemplos a mano con dos activos de volatilidades de 10% y 20%: el peso óptimo en el activo tranquilo es 0.80, 0.895, 1.0 y 1.333 con correlaciones de 0, 0.3, 0.5 y 0.8, el umbral de correlación es 0.5 (volatilidad baja entre volatilidad alta), y con correlación de 0.8 la solución libre (peso de 1.333, es decir 33% vendido corto en el otro activo) tiene volatilidad de 8.94% contra 10% en la esquina de solo largo. Con tres activos de volatilidades de 10%, 15% y 20%: sin restricción los pesos son 1.069, 0.264 y menos 0.333 (volatilidad de 7.84%), y solo largo son 0.736, 0.264 y 0 (volatilidad de 9.03%), con covarianzas de cada activo con la cartera de 0.00815, 0.00815 y 0.01415 contra una varianza de la cartera de 0.00815. Con datos reales de USD/MXN, USD/JPY, USD/EUR, USD/GBP, USD/CAD y USD/BRL (1570 días de rendimientos comunes de octubre de 2020 a octubre de 2026): cinco carteras entrenadas con 1099 días y evaluadas en los 471 días siguientes.
 * `clase21_markowitz_shrinkage.ipynb`: Markowitz completo con `numpy`, `scipy` y `scikit-learn`. Ejemplos a mano con dos activos de rendimientos esperados de 4% y 8%, volatilidades de 10% y 20% y correlación de 0.3: pesos de máximo Sharpe de 2/3 y 1/3, rendimiento de 5.33%, volatilidad de 10.75% y Sharpe de 0.496, contra 0.40 de cada activo por separado, y una frontera con el peso del primer activo de 0 a 1. Dos activos casi idénticos (volatilidad de 10% y correlación de 0.9) cuyos pesos pasan de 4.8% y 95.2% a 95.2% y 4.8% al cambiar medio punto el rendimiento esperado, contra un error estándar del rendimiento promedio de 5 puntos con 4 años de datos. Simulación de seis activos (300 repeticiones, 1000 días) en dos escenarios, con Sharpe verdadero parecido y muy distinto entre activos. Con datos reales de seis pares contra el dólar (1570 días, del 8 de octubre de 2020 al 21 de octubre de 2026, 1099 de entrenamiento y 471 de prueba): pesos iguales, mínima varianza con covarianza encogida, máximo Sharpe sin encoger y máximo Sharpe con rendimientos encogidos (lambda de 0.25). El notebook incluye además una parte de carry (diferencial de tasas) y de elección de lambda (validación hacia adelante anidada con la regla de un error estándar, y la fórmula de Bayes Stein de Jorion) que se corrió con tasas de relleno constantes, por lo que sus resultados no se publican y quedan pendientes.
+* `clase22_largo_corto_vol_objetivo.ipynb`: posiciones largas y cortas con volatilidad objetivo, con `numpy` y `scikit-learn`. Ejemplo a mano con rendimientos esperados de 4% y 2%, volatilidades de 10% y 20% y correlación de 0.3: la dirección (inversa de la covarianza por mu) es 4.066 y menos 0.110, y con volatilidad objetivo de 8% los pesos son 0.812 y menos 0.022, con rendimiento de 3.2% y Sharpe de 0.401, el mismo con objetivos de 4%, 8% y 16%. Con datos reales de seis pares contra el dólar (1570 días del 8 de octubre de 2020 al 21 de octubre de 2026, 1099 de entrenamiento y 471 de prueba): largo dólar con pesos iguales, largo y corto con rendimientos sin encoger, con Sharpe individual encogido a la mitad hacia el promedio y con Sharpe igual para todos. El notebook incluye una celda opcional para el carry que se deja sin usar hasta tener las tasas históricas.
 
 ## Qué aprendí
 
@@ -34,6 +36,12 @@
 * Las cuatro carteras (todas largo dólares contra otras monedas, sin carry) tuvieron Sharpe fuera de muestra de 0.01 o menos (menos 0.61 en pesos iguales, menos 0.29 en mínima varianza), mientras que dentro de muestra pesos iguales tenía 0.45. El rendimiento de estar largo dólares cambió de signo entre el entrenamiento y la prueba, y con un error estándar del Sharpe de cerca de 0.7, las diferencias entre carteras no se distinguen de ruido.
 * El lambda no se elige mirando el periodo de prueba. Las opciones son una validación hacia adelante dentro del entrenamiento con la regla de un error estándar (el lambda más encogido que no se queda atrás del mejor), o una fórmula como la de Bayes Stein de Jorion, que lo calcula de los datos. El código está en el notebook, y los resultados con tasas reales quedan pendientes.
 * En divisas, una posición larga en dólares contra otra moneda se financia sola y su rendimiento total es el precio más el diferencial de tasas (carry), que ya es un rendimiento en exceso. Los pesos que suman 1 y la restricción de solo largo son una formulación de activos como acciones, y para posiciones de FX que no cuestan nada la formulación natural es largo y corto, con pesos que no suman 1 y una volatilidad objetivo.
+* En divisas una posición no cuesta dinero, así que el problema natural no es repartir 100% del capital sino decidir cuánto riesgo tomar. Los pesos son proporcionales a la inversa de la covarianza por los rendimientos esperados, se escalan a una volatilidad objetivo, y pueden ser largos o cortos. El Sharpe no cambia con la volatilidad objetivo, solo la escala.
+* Un activo con rendimiento esperado positivo puede quedar corto. Con rendimientos de 4% y 2%, volatilidades de 10% y 20% y correlación de 0.3, el segundo queda en menos 0.022, porque su exposición al primero (beta de 0.6) costaría 2.4%, más de lo que promete (2%).
+* Encoger los rendimientos esperados hacia cero no cambia los pesos con volatilidad objetivo, porque la escala se cancela. Por eso se encogen los Sharpe individuales hacia el Sharpe promedio.
+* Con seis pares reales, la volatilidad objetivo de 8% se cumplió dentro de muestra (7.95% a 8.03%) y fuera quedó más baja (7.30% a 7.59%), porque el periodo de prueba fue más tranquilo (cocientes de 0.91 a 0.95).
+* El Sharpe fuera de muestra fue 0.08 para largo y corto sin encoger, menos 0.10 con Sharpe encogido a la mitad, menos 0.48 con Sharpe igual y menos 0.61 para largo dólar con pesos iguales. Con un error estándar de 0.73, las diferencias no se distinguen de ruido y ninguno de los cuatro se distingue de cero.
+* El largo y corto sin encoger tiene una exposición bruta de 2.28 veces, contra 1.21 de pesos iguales, es decir apalancamiento que en la práctica cuesta.
 
 ## Conclusión de la clase 20
 
@@ -42,6 +50,10 @@ El portafolio de varianza mínima se obtiene igualando la derivada a cero, pero 
 ## Conclusión de la clase 21
 
 El portafolio de máximo Sharpe combina rendimientos esperados y covarianza, y su punto débil es que los rendimientos esperados se estiman con mucho más error que la covarianza: con dos activos casi idénticos, medio punto de diferencia en el rendimiento esperado voltea los pesos de 4.8% y 95.2% a 95.2% y 4.8%, y con 4 años de datos el error estándar del rendimiento promedio es de unos 5 puntos. En una simulación con parámetros verdaderos conocidos, pesos iguales superó a los optimizadores cuando los activos eran parecidos, y el máximo Sharpe con estimaciones superó a pesos iguales cuando eran muy distintos, así que ningún método gana siempre. Con seis pares de divisas contra el dólar, el máximo Sharpe sin encoger puso 93.5% en USD/JPY y pasó de un Sharpe de 1.03 dentro de muestra a 0.01 fuera de muestra. Encoger los rendimientos diversificó el portafolio pero no mejoró el resultado fuera de muestra en esta partición, y las cuatro carteras tuvieron un Sharpe de 0.01 o menos fuera de muestra porque el rendimiento de estar largo dólares cambió de signo entre los dos periodos, con un error estándar de cerca de 0.7 que no permite distinguir entre ellas. El rendimiento esperado de un par de divisas medido solo con el precio es un insumo muy ruidoso para optimizar, y en FX el carry y una formulación de posiciones largas y cortas que se financian solas son pendientes antes de sacar conclusiones.
+
+## Conclusión de la clase 22
+
+En divisas, donde una posición se financia sola, la formulación natural es largo y corto con una volatilidad objetivo y pesos que no suman 1. Con seis pares contra el dólar, la volatilidad objetivo de 8% se cumplió dentro de muestra y fuera quedó entre 7.30% y 7.59%. El Sharpe fuera de muestra fue de menos 0.61 a 0.08 entre las cuatro carteras, con un error estándar de 0.73, así que no hay evidencia de que una supere a otra ni de que alguna tenga ventaja. El resultado es una sola partición, sin carry y sin costos de operación, y el largo y corto implica casi el doble de exposición bruta.
 
 ## Resultados de la clase 20
 
@@ -148,7 +160,33 @@ Desempeño dentro y fuera de muestra:
 
 El error estándar aproximado del Sharpe fuera de muestra, con 471 días (cerca de 1.9 años), es de unos 0.73, así que las diferencias entre carteras no se distinguen de ruido.
 
+## Resultados de la clase 22
+
+Dos activos con rendimientos esperados de 4% y 2%, volatilidades de 10% y 20% y correlación de 0.3. Pesos con volatilidad objetivo de 8%: 0.812 y menos 0.022, rendimiento esperado de 3.2% y Sharpe de 0.401. Con objetivos de 4%, 8% y 16% el rendimiento es 1.6%, 3.2% y 6.41%, y el Sharpe es 0.401 en los tres.
+
+Seis pares contra el dólar, 1570 días del 8 de octubre de 2020 al 21 de octubre de 2026, con 1099 días de entrenamiento y 471 de prueba. Sharpe individual en entrenamiento: USD/MXN menos 0.09, USD/JPY 1.02, USD/EUR 0.41, USD/GBP 0.12, USD/CAD 0.29 y USD/BRL 0.23. Un peso positivo significa estar largo dólares contra esa moneda.
+
+| Par | Largo USD, pesos iguales | L/C con mu sin encoger | L/C con Sharpe encogido (0.5) | L/C con Sharpe igual |
+|---|---|---|---|---|
+| USD/MXN | 0.201 | menos 0.173 | menos 0.056 | 0.237 |
+| USD/JPY | 0.201 | 0.810 | 0.763 | 0.397 |
+| USD/EUR | 0.201 | 0.358 | 0.315 | 0.111 |
+| USD/GBP | 0.201 | menos 0.575 | menos 0.432 | 0.046 |
+| USD/CAD | 0.201 | 0.270 | 0.290 | 0.238 |
+| USD/BRL | 0.201 | 0.099 | 0.141 | 0.191 |
+| Exposición bruta | 1.21 | 2.28 | 2.00 | 1.22 |
+
+| Cartera | Vol. dentro | Vol. fuera | Sharpe dentro | Rendimiento fuera | Sharpe fuera |
+|---|---|---|---|---|---|
+| Largo USD, pesos iguales | 8.03% | 7.30% | 0.45 | menos 4.44% | menos 0.61 |
+| L/C con mu sin encoger | 7.95% | 7.46% | 1.17 | 0.56% | 0.08 |
+| L/C con Sharpe encogido (0.5) | 7.97% | 7.59% | 1.12 | menos 0.74% | menos 0.10 |
+| L/C con Sharpe igual | 8.02% | 7.42% | 0.63 | menos 3.54% | menos 0.48 |
+
+El error estándar aproximado del Sharpe fuera de muestra es 0.73.
+
 ## Limitaciones
 
 * En la clase 20, los ejemplos de dos y tres activos usan volatilidades y correlaciones supuestas, así que no dicen nada sobre mercados. Con datos reales solo se minimiza la varianza, sin considerar rendimientos esperados, y la covarianza se estima con error. Los portafolios son de dólar contra seis divisas, un ejemplo didáctico muy cargado a un solo factor (el dólar, clase 12), y no una cartera lista para operar. Hay una sola partición de 70% y 30%, el periodo de prueba (471 días, cerca de 1.9 años) es más tranquilo que el de entrenamiento, y las diferencias de 0.1 a 0.7 puntos porcentuales de volatilidad entre carteras no se probaron estadísticamente. Los pesos son fijos, con rebalanceo diario implícito y sin costos de operación ni rotación. Con solo 6 activos, el error de estimación de la covarianza pesa poco, y los problemas de los optimizadores con muchos activos no se probaron. Los pesos dependen de la ventana de entrenamiento y cambiarían con otra, y la comparación de carteras no incluye una técnica de encogimiento de la covarianza. Los pesos que el solver deja en cero se redondean con una tolerancia de 0.000001.
 * En la clase 21, los rendimientos de los pares son solo de precio y no incluyen el carry (diferencial de tasas), que en divisas es una parte grande del rendimiento de una posición. Las carteras de los resultados con datos reales son solo largo en dólares y con pesos que suman 1, una formulación pensada para activos como acciones, y para posiciones de FX que se financian solas lo natural es largo y corto con pesos que no suman 1 y una volatilidad objetivo, lo cual no se probó. Hay una sola partición de 70% y 30%, el periodo de prueba es corto (cerca de 1.9 años, con error estándar del Sharpe de unos 0.73) y las diferencias entre las cuatro carteras no se distinguen de ruido. El rendimiento de estar largo dólares cambió de signo entre el entrenamiento y la prueba, así que los rendimientos esperados estimados con el pasado no se mantuvieron. La lambda de 0.25 la elegí yo sin criterio y no se validó, y la elección de lambda queda pendiente. La simulación usa seis activos con correlación igual de 0.5, rendimientos normales e independientes en el tiempo y solo dos escenarios elegidos por mí, así que su conclusión (que ningún método gana siempre) depende de esa construcción. La tasa libre se tomó como 0 y no hay costos de operación. Las partes de carry y de elección de lambda del notebook se corrieron con tasas de relleno constantes (USD y MXN con los valores actuales y las demás en 0.0), por lo que sus resultados no se publican. La fórmula de Bayes Stein de Jorion del notebook se implementó de memoria y debe verificarse contra la referencia antes de citarla. Los pesos que el solver deja en cero se redondean con una tolerancia de 0.000001.
+* En la clase 22 los rendimientos son solo de precio, sin carry, y no hay costos de operación, apalancamiento ni rebalanceo costeado, con una exposición bruta de hasta 2.28 veces. Hay una sola partición de 70% y 30%, el periodo de prueba (471 días) es corto y tranquilo y el error estándar del Sharpe es 0.73, por lo que las diferencias entre carteras y contra cero no son concluyentes. No se descompuso de dónde viene la diferencia entre el largo y corto sin encoger y pesos iguales. El Sharpe encogido (0.5) y el Sharpe igual son elecciones mías sin validar. La volatilidad objetivo se calibra con el entrenamiento y fuera de muestra no se cumple exactamente. Los resultados de la volatilidad realizada en ventanas de 63 días no se incluyen.
