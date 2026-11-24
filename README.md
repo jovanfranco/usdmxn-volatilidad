@@ -13,7 +13,7 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 | 3 | 11 a 16 | Álgebra lineal, PCA, cálculo, regresión y series de tiempo | [docs/03_algebra_calculo_regresion_series.md](docs/03_algebra_calculo_regresion_series.md) |
 | 4 | 17 a 19 | EWMA y GARCH, pruebas múltiples y validación hacia adelante | [docs/04_volatilidad_y_validacion.md](docs/04_volatilidad_y_validacion.md) |
 | 5 | 20 a 22 | Portafolios de mínima varianza, máximo Sharpe, shrinkage y posiciones largas y cortas con volatilidad objetivo | [docs/05_portafolios_y_optimizacion.md](docs/05_portafolios_y_optimizacion.md) |
-| 6 | 23 y 24 | Señales sistemáticas: momentum en divisas, fuga de información y combinación de señales | [docs/06_senales_sistematicas_fx.md](docs/06_senales_sistematicas_fx.md) |
+| 6 | 23 a 25 | Señales sistemáticas: momentum, fuga de información, combinación de señales y carry en divisas | [docs/06_senales_sistematicas_fx.md](docs/06_senales_sistematicas_fx.md) |
 
 ## Notebooks
 
@@ -43,6 +43,7 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 | 22 | `clase22_largo_corto_vol_objetivo.ipynb` | Posiciones largas y cortas con volatilidad objetivo |
 | 23 | `clase23_momentum_fx.ipynb` | Momentum en divisas con costos |
 | 24 | `clase24_fuga_y_combinar_senales.ipynb` | Fuga de información y combinación de señales |
+| 25 | `clase25_carry_fx.ipynb` | Carry en divisas: diferencial de tasas |
 
 ## Lo más importante que encontré
 
@@ -56,6 +57,7 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 * Con posiciones largas y cortas y una volatilidad objetivo de 8%, la volatilidad objetivo se cumplió dentro de muestra y fuera quedó entre 7.3% y 7.6%. El Sharpe fuera de muestra de las cuatro carteras fue de menos 0.61 a 0.08, con un error estándar de 0.73, así que no hay evidencia de que una supere a otra, y el largo y corto usó 2.3 veces de exposición bruta.
 * Una señal de momentum de precio (ventanas de 21 a 252 días, escalada por volatilidad) en los seis pares no mostró evidencia de ventaja entre 2021 y 2026: los Sharpe antes de costos fueron de menos 0.33 a 0.21 con un error estándar de 0.44, y los costos supuestos de 1 a 10 puntos base lo empeoraron. La referencia de siempre largo dólar tuvo un Sharpe de 0.50, también sin significancia. Con cinco años y seis pares, el experimento solo detecta ventajas grandes.
 * Una fuga de información (usar la señal del mismo día) infla un resultado hasta volverlo irreconocible: con una señal de 5 días, el Sharpe pasó de menos 0.03 a 10.90, y una prueba de control con datos remuestreados dio 2.14 con trampa contra menos 0.02 con rezago. Combinar tres señales de precio (momentum de 126 días, reversión de 5 días y reversión de 504 días) redujo la volatilidad, pero no creó ventaja: ninguna señal fue significativa (error estándar del Sharpe de 0.49) y la combinada tuvo un Sharpe de menos 0.24.
+* Al sumar el diferencial de tasas (carry) a los seis pares contra el dólar, una señal de carry (largo la moneda con tasa más alta) tuvo un Sharpe de 0.94 entre 2022 y 2026 (t de 1.93, p de 0.054 y 0.163 con Bonferroni), casi todo por intereses (3.74% anual contra 0.63% del precio). Fue la señal con mejor resultado del bloque, pero no alcanza significancia al corregir por pruebas múltiples, y tiene asimetría negativa (menos 0.77): muchos meses chicos a favor y pocos meses grandes en contra. Combinarla con el momentum la empeoró (Sharpe de 0.13), porque el momentum tuvo un Sharpe de menos 0.60.
 
 ## Cómo correr los notebooks
 
@@ -72,11 +74,11 @@ Cada clase es un notebook de Python (Google Colab). Este README es un resumen; e
 * Los rendimientos de las carteras de las clases 20 a 23 son solo de precio, sin carry (diferencial de tasas), que en divisas es una parte grande del rendimiento, y los costos de la clase 23 son un supuesto.
 * Las clases 6, 7, 8 y 10 son ejercicios didácticos sin datos de mercado.
 * Las limitaciones detalladas de cada clase están en los documentos de `docs/`.
-* Los rendimientos de las carteras de las clases 20 a 24 son solo de precio, sin carry (diferencial de tasas), que en divisas es una parte grande del rendimiento, y los costos de las clases 23 y 24 son un supuesto.
+* Los rendimientos de las carteras de las clases 20 a 24 son solo de precio, sin carry, y el carry de la clase 25 se aproxima con tasas de corto plazo mensuales de distintas fuentes (no con puntos forward). Los costos de las clases 23 a 25 son un supuesto.
 
 ## Próximos pasos
 
-Incorporar el carry con las tasas históricas reales, probar otras señales (valor) junto con las de precio, usar los costos reales de operación y elegir el parámetro de encogimiento con validación hacia adelante.
+Medir el carry con puntos forward reales, probar otras señales (valor) junto con las de precio y el carry, usar los costos reales de operación y elegir el parámetro de encogimiento con validación hacia adelante.
 
 ## Aviso
 
