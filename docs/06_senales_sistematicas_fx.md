@@ -1,4 +1,4 @@
-# Bloque 6: Señales sistemáticas en divisas (clases 23 y 24)
+# Bloque 6: Señales sistemáticas en divisas (clases 23, 24 y 25)
 
 [Volver al README](../README.md)
 
@@ -11,11 +11,15 @@
 * Demuestra cuánto infla un resultado usar información del futuro (fuga de información), comparando el Sharpe con y sin rezago para ventanas de 5, 21, 126 y 252 días y con una prueba de control: se quita a cada par su rendimiento promedio, se remuestrean los días al azar (100 repeticiones) y se corre el mismo pipeline, que debe dar un Sharpe cercano a cero.
 * Combina tres señales de signo (momentum de 126 días, reversión de 5 días y reversión de 504 días) en un promedio, con la misma escala de volatilidad (objetivo de 10% por par y tope de 3 veces), y compara el Sharpe combinado observado con el que predice la fórmula según la correlación entre señales.
 * Corrige con Bonferroni (4 pruebas: las tres señales y la combinada) y mide costos de 0, 1, 2 y 5 puntos base por unidad operada. No incluye carry.
-
+* Agrega el carry al rendimiento de estar largo en dólares: a cada día se le suma el diferencial de tasas anual (tasa del dólar menos tasa de la otra moneda) entre 252. Las tasas son de corto plazo, de FRED, con un dato por mes y un rezago de un mes (la tasa de un mes solo se usa desde el mes siguiente).
+* Prueba una señal de carry de signo (largo USD si el dólar paga más y corto si paga menos), con la misma escala de volatilidad (objetivo de 10% por par y tope de 3 veces), y la compara con el momentum de 126 días, con la combinación de ambos y con la referencia de siempre largo dólar, todos con rendimiento total (precio más intereses).
+* Separa el rendimiento del carry en intereses y movimiento del precio, mide su riesgo de cola (peor mes, asimetría y caída máxima), hace un control con las señales repartidas al azar entre pares (200 repeticiones) y prueba costos de 0, 1, 2 y 5 puntos base. Corrige con Bonferroni (3 pruebas).
+  
 ## Contenido
 
 * `clase23_momentum_fx.ipynb`: momentum con `numpy`, `pandas` y `scipy`. Ejemplo a mano con precios de 100, 102, 104, 103, 101, 100 y 102 y una ventana de 3 días: las señales al cierre de los días 3, 4 y 5 son más 1, menos 1 y menos 1, y ganan los rendimientos del día siguiente (menos 1.942%, más 0.990% y menos 2.000%), con un total de menos 2.952% por los cambios de dirección. Con datos reales de seis pares contra el dólar (USD/MXN, USD/JPY, USD/EUR, USD/GBP, USD/CAD y USD/BRL), se evalúan 1318 días del 28 de septiembre de 2021 al 21 de octubre de 2026 (5.23 años), y los primeros 252 días se usan solo para calentar la señal.
 * `clase24_fuga_y_combinar_senales.ipynb`: fuga de información y combinación de señales con `numpy`, `pandas` y `scipy`. Ejemplo a mano de fuga con rendimientos de 1%, menos 2% y 0.5% y señales de signo: con trampa ganan 1%, 2% y 0.5% (total 3.5%) y sin trampa menos 2% y menos 0.5% (total menos 2.5%). Ejemplo a mano de combinación con la fórmula Sharpe combinado igual a S por la raíz de N entre (1 más (N menos 1) por rho), con S de 0.4: para N de 2, 3 y 5 y rho de 0, 0.3 y 0.9 da 0.566, 0.496 y 0.410; 0.693, 0.548 y 0.414; y 0.894, 0.603 y 0.417. Con datos reales de seis pares contra el dólar (USD/MXN, USD/JPY, USD/EUR, USD/GBP, USD/CAD y USD/BRL) se usan 1,570 días del 8 de octubre de 2020 al 21 de octubre de 2026 y se evalúan 1,065 días desde el 15 de septiembre de 2022 (4.23 años), porque la señal de 504 días necesita calentamiento y todas se miden en las mismas fechas.
+* `clase25_carry_fx.ipynb`: carry en divisas con `numpy`, `pandas` y `scipy`. Ejemplo a mano de una posición corta en USD/MXN con tasas supuestas de 7% (peso) y 4% (dólar): en 5 días con rendimientos de USD/MXN de 0.2%, menos 0.1%, 0.4%, menos 0.3% y 0.1%, el precio da menos 0.300%, el carry (3% entre 252 por día) da 0.0595% y el total es menos 0.2405%. Con un carry de 3% y una volatilidad de precio de 12%, el Sharpe del carry puro es 0.25, y un año con el precio una desviación en contra deja menos 9%. Con datos reales de seis pares contra el dólar (USD/MXN, USD/JPY, USD/EUR, USD/GBP, USD/CAD y USD/BRL) se usan 1,570 días del 8 de octubre de 2020 al 21 de octubre de 2026 y se evalúan 1,065 días desde el 15 de septiembre de 2022 (4.23 años), las mismas fechas de la clase 24. Las tasas vienen de FRED: interbancaria a 3 meses (OCDE) para Estados Unidos, México, Japón y Canadá, tasa de depósito del BCE para el euro (serie diaria, promediada por mes), y tasa de call money para Gran Bretaña y Brasil. El diferencial promedio contra el dólar desde septiembre de 2022 es de menos 5.30 puntos para USD/MXN, 4.05 para USD/JPY, 1.80 para USD/EUR, 0.27 para USD/GBP, 0.94 para USD/CAD y menos 8.72 para USD/BRL.
 
 ## Qué aprendí
 
@@ -35,6 +39,15 @@
 * El Sharpe del momentum de 126 días fue de menos 0.78 en esta clase y de menos 0.22 en la 23, con la misma regla de escala. La diferencia viene del periodo (esta clase evalúa desde el 15 de septiembre de 2022 y la 23 desde el 28 de septiembre de 2021) y muestra cuánto cambia un resultado de Sharpe con la ventana de datos.
 * Los costos pesan según la rotación anual. La reversión de 5 días rota 142.87 unidades por año y pasa de un Sharpe de 0.03 a menos 0.22 con 1 punto base, menos 0.46 con 2 y menos 1.20 con 5. La reversión de 504 días rota 26.98 y pasa de 0.50 a 0.44, 0.39 y 0.23. La combinada rota 59.67 y pasa de menos 0.24 a menos 0.48, menos 0.72 y menos 1.43.
 * Un resultado nulo, reportado con claridad y con un control que demuestra que el pipeline es honesto, vale más que un Sharpe espectacular que viene de una trampa.
+* * El carry es lo que una posición cobra por tener la moneda de mayor tasa, y se suma al rendimiento del precio. Una posición larga en una moneda de tasa alta cobra intereses todos los días, pero el precio puede moverse en contra por más de lo cobrado. Con un carry de 3% y una volatilidad de 12%, el Sharpe sin tendencia del precio es solo 0.25.
+* Para no mirar el futuro, la tasa de un mes solo se usa desde el mes siguiente, y la posición de hoy gana el rendimiento de mañana (`shift(1)`), igual que en la clase 24. Las series diarias se pasan a un promedio por mes antes de aplicar el rezago, para que todas las monedas queden con una observación por mes.
+* El carry fue la señal con mejor resultado del bloque: rendimiento de 4.37% anual con volatilidad de 4.67%, Sharpe de 0.94, t de 1.93 y p de 0.054, pero con Bonferroni (3 pruebas) el p es 0.163 y el error estándar del Sharpe es 0.49, así que no hay evidencia suficiente de que sea una ventaja real.
+* Casi todo el rendimiento viene de los intereses (3.74% anual) y muy poco del precio (0.63%). Con solo el precio, el Sharpe es 0.14. En teoría, las monedas de tasa alta deberían depreciarse lo suficiente para borrar el carry, y aquí el precio no lo borró, pero esa parte del resultado no es significativa.
+* La señal fue siempre corto USD contra MXN y BRL (0.00 de días largo USD) y largo USD contra JPY (1.00), EUR (1.00), CAD (0.97) y GBP (0.72), y GBP fue la que más cambió de lado porque su diferencial es el más chico.
+* El carry tiene asimetría negativa de menos 0.77: muchos meses chicos a favor y pocos meses grandes en contra. El peor mes fue agosto de 2024, con menos 3.74% (un mes en que el carry con el yen se desarmó, asociación hecha de memoria y no probada), y la caída máxima fue de menos 7.43%, cerca de dos años de intereses. Siempre largo dólar tuvo asimetría de 0.25 y una caída máxima de menos 13.03%.
+* Combinar el carry con el momentum no ayudó: la combinada tuvo un Sharpe de 0.13, contra 0.94 del carry solo, porque el momentum de 126 días tuvo un Sharpe de menos 0.60 (t de menos 1.23). La correlación entre ambos fue de menos 0.02, así que son independientes, pero combinar con una señal de Sharpe negativo no ayuda. Es la misma lección de la clase 24.
+* Un control con las señales repartidas al azar entre pares sirve para ver si importa que cada par tenga la señal que le toca. Con 200 repeticiones, el Sharpe promedio fue de [PEGAR] (desviación estándar de [PEGAR]) contra 0.94 del carry real, y una fracción de [PEGAR] de los repartos igualó o superó al real. Repartir también los intereses, y no solo las señales, sesga el control a favor, porque regala intereses que el par no paga.
+* Los costos pesan según la rotación. El carry rota 11.49 unidades por año y baja de 0.94 a 0.81 con 5 puntos base. El momentum rota 44.69 y pasa de menos 0.60 a menos 0.99, y la combinada rota 23.51 y pasa de 0.13 a menos 0.19. Una señal lenta es más barata de operar.
 
 ## Conclusión de la clase 23
 
@@ -42,6 +55,9 @@ Una señal de momentum de precio con ventanas de 1 a 12 meses, escalada por vola
 ## Conclusión de la clase 24
 
 Una fuga de información, usar sin querer datos que no se conocían al operar, puede inflar un resultado hasta volverlo irreconocible: con una señal de 5 días, el Sharpe pasó de menos 0.03 a 10.90. Se detecta con una prueba de control, que corre el mismo proceso sobre datos remuestreados sin patrón real: un proceso honesto da cerca de cero y el tramposo dio 2.14. Combinar tres señales de precio (momentum de 126 días, reversión de 5 días y reversión de 504 días) en seis pares contra el dólar redujo la volatilidad, porque las señales están poco correlacionadas o correlacionadas en negativo, pero no creó ventaja: ninguna señal fue significativa (el p más bajo fue 0.109 y con Bonferroni 0.435), la combinada tuvo un Sharpe de menos 0.24 y los costos de 1 a 5 puntos base lo empeoraron, sobre todo en las señales de rotación alta. El periodo es de 4.23 años, el análisis no incluye carry y las explicaciones posibles (un periodo sin patrones aprovechables o que simplemente no haya ventaja) no están probadas.
+## Conclusión de la clase 25
+
+Sumar el diferencial de tasas al rendimiento de seis pares contra el dólar permitió probar una señal de carry: largo la moneda de mayor tasa y corto la de menor tasa. Entre septiembre de 2022 y octubre de 2026 tuvo el mejor resultado de todo el bloque (Sharpe de 0.94, t de 1.93 y p de 0.054), pero con la corrección de Bonferroni el p es 0.163 y el error estándar del Sharpe es 0.49, así que el experimento no distingue una ventaja real del azar. Casi todo el rendimiento fueron intereses (3.74% anual) y el precio aportó muy poco (0.63%), pero el carry tuvo asimetría negativa (menos 0.77) y una caída máxima de menos 7.43%, cerca de dos años de intereses, un perfil de pocas pérdidas grandes. Combinarlo con el momentum lo empeoró (Sharpe de 0.13), porque el momentum tuvo un Sharpe de menos 0.60, y los costos de 1 a 5 puntos base afectan poco al carry (0.94 a 0.81) y mucho al momentum. El periodo es corto, las tasas son aproximadas y las explicaciones posibles del resultado (una compensación por el riesgo de pérdidas grandes o un periodo favorable para las monedas de tasa alta) no están probadas.
 
 ## Resultados de la clase 23
 
@@ -118,6 +134,42 @@ Rotación anual y Sharpe según el costo por unidad operada (los puntos base son
 | Reversión larga 504 días | 26.98 | 0.50 | 0.44 | 0.39 | 0.23 |
 | Combinada (promedio de las 3) | 59.67 | menos 0.24 | menos 0.48 | menos 0.72 | menos 1.43 |
 
+## Resultados de la clase 25
+
+Evaluación del 15 de septiembre de 2022 al 21 de octubre de 2026 (1,065 días, 4.23 años), con escala de volatilidad de 10% por par, cartera igual ponderada de los seis pares y rezago de un día, antes de costos. Los rendimientos incluyen intereses (diferencial anual entre 252), salvo donde dice solo precio:
+
+| Estrategia | Rend. anual | Volatilidad | Sharpe | t | p | p con Bonferroni |
+|---|---|---|---|---|---|---|
+| Carry (con intereses) | 4.37% | 4.67% | 0.936 | 1.925 | 0.054 | 0.163 |
+| Carry (solo precio) | 0.63% | 4.67% | 0.136 | 0.280 | 0.780 | no aplica |
+| Momentum 126 días (rend. total) | menos 3.43% | 5.73% | menos 0.598 | menos 1.230 | 0.219 | 0.656 |
+| Combinada carry + momentum | 0.47% | 3.66% | 0.129 | 0.266 | 0.790 | 1.0 |
+| Siempre largo USD (rend. total) | 0.53% | 7.48% | 0.070 | 0.144 | 0.885 | no aplica |
+
+El error estándar aproximado del Sharpe es 0.49. Bonferroni se aplicó con 3 pruebas (carry, momentum y combinada). La correlación entre el carry y el momentum es de menos 0.02.
+
+Fracción de días largo USD con la señal de carry: USD/MXN 0.00, USD/JPY 1.00, USD/EUR 1.00, USD/GBP 0.72, USD/CAD 0.97 y USD/BRL 0.00. Rendimiento anual del carry: precio 0.63%, intereses 3.74% y total 4.37%.
+
+Riesgo de cola (rendimientos mensuales):
+
+| Estrategia | Peor mes | Mejor mes | Asimetría | Caída máxima |
+|---|---|---|---|---|
+| Carry (con intereses) | menos 3.74% | 2.48% | menos 0.77 | menos 7.43% |
+| Combinada carry + momentum | menos 2.96% | 2.29% | menos 0.50 | menos 8.91% |
+| Siempre largo USD (rend. total) | menos 4.53% | 4.91% | 0.25 | menos 13.03% |
+
+El peor mes del carry fue agosto de 2024.
+
+Control con las señales de carry repartidas al azar entre pares (200 repeticiones, con rendimientos e intereses reales): Sharpe real del carry de 0.94; con señales al azar, promedio de [PEGAR], desviación estándar de [PEGAR], y una fracción de [PEGAR] de los repartos con Sharpe igual o mayor al real.
+
+Rotación anual y Sharpe según el costo por unidad operada (los puntos base son un supuesto, no un costo real):
+
+| Estrategia | Rotación anual | 0 pb | 1 pb | 2 pb | 5 pb |
+|---|---|---|---|---|---|
+| Carry | 11.49 | 0.94 | 0.91 | 0.89 | 0.81 |
+| Momentum 126 días | 44.69 | menos 0.60 | menos 0.68 | menos 0.75 | menos 0.99 |
+| Combinada carry + momentum | 23.51 | 0.13 | 0.07 | 0.00 | menos 0.19 |
+
 ## Limitaciones
 
 * Hay una sola muestra de 5.23 años y solo seis pares, todos contra el dólar y muy ligados a un mismo factor. El error estándar del Sharpe es 0.44, así que el análisis solo detecta ventajas grandes, y que no salga una ventaja no demuestra que no exista.
@@ -132,3 +184,8 @@ Rotación anual y Sharpe según el costo por unidad operada (los puntos base son
 * La combinada es un promedio simple de tres señales elegidas por mí, sin optimizar. Con un Sharpe promedio negativo entre las individuales, combinar no podía producir un resultado positivo, y la fórmula de Sharpe combinado es una aproximación que supone correlaciones y Sharpe parecidos entre señales.
 * Bonferroni con 4 pruebas es conservador porque las señales están correlacionadas. La prueba de control solo valida que el pipeline no hace trampa con el rezago, no que las señales tengan ventaja.
 * Los costos de 1, 2 y 5 puntos base por unidad operada son un supuesto mío y no los costos de la mesa. No se modelaron el spread por par ni el deslizamiento. Las posiciones son solo de precio, sin carry.
+* * El carry de la clase 25 se aproxima con tasas de corto plazo de FRED, con un dato por mes, y no con puntos forward ni con la base cruzada de divisas, que son lo que realmente se cobra. Las series son de distintas fuentes (interbancaria a 3 meses de la OCDE para Estados Unidos, México, Japón y Canadá; tasa de depósito del BCE para el euro; y call money para Gran Bretaña y Brasil), así que los diferenciales no son totalmente comparables entre pares. La tasa del yen se congela desde septiembre de 2026 (último dato disponible), y el rezago de un mes hace que cada tasa use información atrasada.
+* Los intereses se aproximan como el diferencial anual entre 252 por día, sin capitalización, y suponen que se puede prestar y pedir prestado a la tasa de la serie, sin costo de financiamiento ni diferencial por moneda. Para Brasil y México la posición real tiene costos y restricciones que no se modelaron.
+* Hay una sola muestra de 4.23 años y seis pares muy ligados a un mismo factor, con un error estándar del Sharpe de 0.49. Un Sharpe de 0.94 está a unos 1.9 errores estándar del cero, y con Bonferroni (3 pruebas) el p es 0.163. La señal es simple (el signo del diferencial) y no se optimizó.
+* El carry tiene asimetría negativa y el periodo contiene pocos episodios de caída fuerte, así que la caída máxima de menos 7.43% puede subestimar el riesgo en otros periodos. Su Sharpe depende en gran parte de unos pocos pares (MXN, BRL y JPY, con los diferenciales más grandes).
+* El Sharpe del momentum de 126 días (menos 0.60) no es comparable con los de las clases 23 y 24, porque cambian el periodo y el uso de rendimientos con intereses. Los costos de 1, 2 y 5 puntos base son un supuesto mío y no los costos de la mesa.
