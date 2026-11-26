@@ -1,4 +1,4 @@
-# Bloque 6: Señales sistemáticas en divisas (clases 23 a 26)
+# Bloque 6: Señales sistemáticas en divisas (clases 23 a 27)
 
 [Volver al README](../README.md)
 
@@ -16,6 +16,8 @@
 * Separa el rendimiento del carry en intereses y movimiento del precio, mide su riesgo de cola (peor mes, asimetría y caída máxima), hace un control con las señales repartidas al azar entre pares (200 repeticiones) y prueba costos de 0, 1, 2 y 5 puntos base. Corrige con Bonferroni (3 pruebas).
 * Toma el carry de la clase 25 (A) y prueba dos reglas de riesgo: B ajusta el tamaño de la posición según la volatilidad reciente de la cartera (EWMA con lambda de 0.94, apalancamiento igual a 4.5% entre la volatilidad estimada, con tope de 2 veces), y C reduce la exposición a la mitad mientras la cartera esté a más de 3% por debajo de su máximo. Los parámetros (4.5%, tope de 2 y umbral de 3%) se fijaron antes de ver los resultados y no se optimizaron.
 * Mide rendimiento, volatilidad, Sharpe, peor mes, asimetría, caída máxima, la pérdida promedio del peor 5% de los días y el cociente de rendimiento entre caída máxima (Calmar). Compara el Sharpe de B y C contra A con un bootstrap por bloques de 21 días (1,000 remuestreos), hace un control mezclando en el tiempo el apalancamiento de B (200 repeticiones) y prueba costos de 0, 1, 2 y 5 puntos base.
+* Arma una familia de 19 reglas de riesgo sobre el carry de la clase 25: sin regla (A), 12 de volatilidad objetivo (B, con lambda de 0.90, 0.94, 0.97 y 0.99 y topes de 1.5, 2 y 3) y 6 de reducción de exposición tras una caída (C, con umbrales de 2%, 3% y 5% y exposición de 0.25 o 0.5). Calcula el Sharpe de cada una y corrige la mejor con Bonferroni (19 pruebas).
+* Hace una validación hacia adelante: cada 126 días elige la regla con mejor Sharpe en el pasado (ventana creciente, con mínimo de 252 días), la usa los 126 días siguientes y mide el lugar que ocupa entre las 19 en ese periodo. Compara el resultado fuera de muestra contra A, contra el promedio de las 19, contra la regla de la clase 26 y contra la mejor de toda la muestra (que usa el futuro).
   
 ## Contenido
 
@@ -23,6 +25,7 @@
 * `clase24_fuga_y_combinar_senales.ipynb`: fuga de información y combinación de señales con `numpy`, `pandas` y `scipy`. Ejemplo a mano de fuga con rendimientos de 1%, menos 2% y 0.5% y señales de signo: con trampa ganan 1%, 2% y 0.5% (total 3.5%) y sin trampa menos 2% y menos 0.5% (total menos 2.5%). Ejemplo a mano de combinación con la fórmula Sharpe combinado igual a S por la raíz de N entre (1 más (N menos 1) por rho), con S de 0.4: para N de 2, 3 y 5 y rho de 0, 0.3 y 0.9 da 0.566, 0.496 y 0.410; 0.693, 0.548 y 0.414; y 0.894, 0.603 y 0.417. Con datos reales de seis pares contra el dólar (USD/MXN, USD/JPY, USD/EUR, USD/GBP, USD/CAD y USD/BRL) se usan 1,570 días del 8 de octubre de 2020 al 21 de octubre de 2026 y se evalúan 1,065 días desde el 15 de septiembre de 2022 (4.23 años), porque la señal de 504 días necesita calentamiento y todas se miden en las mismas fechas.
 * `clase25_carry_fx.ipynb`: carry en divisas con `numpy`, `pandas` y `scipy`. Ejemplo a mano de una posición corta en USD/MXN con tasas supuestas de 7% (peso) y 4% (dólar): en 5 días con rendimientos de USD/MXN de 0.2%, menos 0.1%, 0.4%, menos 0.3% y 0.1%, el precio da menos 0.300%, el carry (3% entre 252 por día) da 0.0595% y el total es menos 0.2405%. Con un carry de 3% y una volatilidad de precio de 12%, el Sharpe del carry puro es 0.25, y un año con el precio una desviación en contra deja menos 9%. Con datos reales de seis pares contra el dólar (USD/MXN, USD/JPY, USD/EUR, USD/GBP, USD/CAD y USD/BRL) se usan 1,570 días del 8 de octubre de 2020 al 21 de octubre de 2026 y se evalúan 1,065 días desde el 15 de septiembre de 2022 (4.23 años), las mismas fechas de la clase 24. Las tasas vienen de FRED: interbancaria a 3 meses (OCDE) para Estados Unidos, México, Japón y Canadá, tasa de depósito del BCE para el euro (serie diaria, promediada por mes), y tasa de call money para Gran Bretaña y Brasil. El diferencial promedio contra el dólar desde septiembre de 2022 es de menos 5.30 puntos para USD/MXN, 4.05 para USD/JPY, 1.80 para USD/EUR, 0.27 para USD/GBP, 0.94 para USD/CAD y menos 8.72 para USD/BRL.
 * `clase26_gestion_riesgo_carry.ipynb`: gestión de riesgo del carry con `numpy`, `pandas` y `scipy`. Ejemplos a mano: con un objetivo de 4.5% y un tope de 2, una volatilidad estimada de 2%, 3%, 4.5%, 6% y 9% da un apalancamiento de 2.00 (el tope corta el 2.25), 1.50, 1.00, 0.75 y 0.50; una pérdida de 7.43%, 10%, 20% y 50% exige ganar 8.03%, 11.11%, 25% y 100% para recuperarse; y con 6 días de ejemplo (0.4%, 0.3%, menos 2.0%, menos 1.5%, 1.0% y 1.2%) la caída llega a menos 3.5% el día 4 y la exposición del día siguiente baja a 0.5. Con datos reales de los mismos seis pares y tasas de la clase 25 (1,570 días del 8 de octubre de 2020 al 21 de octubre de 2026, con 1,065 días evaluados desde el 15 de septiembre de 2022, 4.23 años).
+* `clase27_validacion_reglas_riesgo.ipynb`: validación hacia adelante de reglas de riesgo con `numpy`, `pandas` y `scipy`. Ejemplo a mano con tres estrategias de Sharpe de entrenamiento de 0.8, 0.5 y 0.2 (X, Y y Z) y de prueba de menos 0.1, 0.4 y 0.3: la elegida con el pasado (X) queda en el lugar 3 de 3 y el promedio de las tres (0.20) la habría superado. Simulación de 19 estrategias sin ventaja real con 4.23 años de datos: el Sharpe del mejor promedia 0.89 y el 95% de las veces queda menor a 1.36. Con datos reales de los mismos seis pares y tasas de la clase 25 (1,570 días del 8 de octubre de 2020 al 21 de octubre de 2026, con 1,065 días evaluados desde el 15 de septiembre de 2022, 4.23 años).
 
 ## Qué aprendí
 
@@ -58,6 +61,13 @@
 * B no redujo la pérdida promedio del peor 5% de los días (menos 0.701% contra menos 0.702% de A): un golpe repentino llega antes de que el EWMA lo registre. Ayuda más ante estrés que dura varios días.
 * La reducción de exposición tras caída (C) fue la más protectora en la cola: peor mes de menos 1.87% y caída máxima de menos 5.49%. A cambio, el rendimiento bajó de 4.37% a 3.74% y el Sharpe de 0.94 a 0.89, con media exposición en 29% de los días. La diferencia de Sharpe contra A fue de menos 0.05 (intervalo de menos 0.29 a 0.21). Es un costo de protección, parecido a una prima de seguro.
 * Los costos pesan según la rotación. A rota 11.49 unidades por año, B 19.94 y C 13.92. Con 5 puntos base, el Sharpe baja a 0.81 en A, 0.90 en B y 0.72 en C.
+* Elegir la mejor de varias estrategias con el pasado puede ser engañoso: entre 19 estrategias sin ventaja real, el Sharpe del mejor promedia 0.89 por puro azar (95% de las veces menor a 1.36, con 4.23 años de datos). Un Sharpe alto del mejor de una familia no es evidencia por sí solo, y por eso se corrige por el número de pruebas y se valida hacia adelante.
+* Dentro de la familia, las reglas de volatilidad objetivo (B) con reacción más rápida del EWMA tuvieron mejor Sharpe: 1.01 con lambda de 0.99, 1.06 con 0.97, 1.11 con 0.94 y de 1.14 a 1.18 con 0.90, contra 0.94 sin regla. El tope (1.5, 2 o 3) casi no cambió el resultado, porque rara vez se activa. Todas las reglas de reducción tras caída (C) quedaron por debajo de A (de 0.75 a 0.89).
+* La mejor regla en toda la muestra (lambda de 0.90 y tope de 1.5) tuvo un Sharpe de 1.18 (p de 0.016), pero con Bonferroni de 19 pruebas el p es 0.295. Como las 19 reglas están muy correlacionadas, Bonferroni es conservador, pero el 1.18 cae dentro de lo que el azar produce entre 19 estrategias independientes.
+* En la validación hacia adelante (7 periodos de 126 días desde el 4 de septiembre de 2023), se eligió siempre la misma regla (lambda de 0.90 y tope de 1.5), así que no hubo cambios entre periodos. Su lugar promedio en la prueba fue 5.1 de 19 (sin habilidad se espera 10): quedó en el lugar 1 o 2 en 5 de los 7 periodos y en los lugares 18 y 11 en los otros dos.
+* Fuera de muestra (813 días, 3.23 años, con un error estándar del Sharpe de 0.56), la regla elegida tuvo un Sharpe de 1.09 (p de 0.050) contra 0.93 sin regla, 1.01 del promedio de las 19 y 1.06 de la regla de la clase 26. Las diferencias (de 0.04 a 0.17) son mucho menores que el error estándar, y la caída máxima de la elegida (menos 7.37%) casi no mejoró la de A (menos 7.44%).
+* Como la regla elegida nunca cambió, la validación hacia adelante da exactamente el mismo resultado que la mejor de toda la muestra, así que aporta poca evidencia independiente. La estabilidad de la elección es una señal a favor, pero no demuestra una ventaja.
+* Reaccionar más rápido a la volatilidad cuesta más rotación: A rota 11.49 unidades por año, B con lambda de 0.94 y tope de 2 rota 19.94, B con lambda de 0.90 y tope de 3 rota 27.25 y C con caída de 3% rota 13.92.
 
 ## Conclusión de la clase 23
 
@@ -71,6 +81,9 @@ Sumar el diferencial de tasas al rendimiento de seis pares contra el dólar perm
 ## Conclusión de la clase 26
 
 Dos reglas de riesgo aplicadas al carry de la clase 25 redujeron las pérdidas grandes entre septiembre de 2022 y octubre de 2026. Ajustar el apalancamiento por la volatilidad reciente de la cartera (objetivo de 4.5%) subió el Sharpe de 0.94 a 1.11 y llevó la asimetría de menos 0.77 a menos 0.27, y un control con el apalancamiento mezclado en el tiempo favorece que reduzca el riesgo en los momentos adecuados (1% del azar iguala el Sharpe real). Pero la mejora del Sharpe contra el carry base no se distingue de cero (diferencia de 0.17, intervalo de 95% de menos 0.04 a 0.35), no redujo la pérdida promedio de los peores días, y el p de 0.023 pierde fuerza al corregir por las cinco estrategias probadas. Reducir a la mitad la exposición tras una caída de 3% dio la menor caída máxima (menos 5.49%), pero a cambio de rendimiento y sin mejorar el Sharpe. El periodo es de 4.23 años con pocos episodios de estrés, así que no se puede saber si las reglas funcionarían en una crisis distinta, y las explicaciones posibles (que la volatilidad se agrupa y se puede anticipar parcialmente, o simplemente que los episodios de esta muestra fueron favorables) no están probadas.
+## Conclusión de la clase 27
+
+Con una familia de 19 reglas de riesgo sobre el carry, las de volatilidad objetivo con reacción más rápida (lambda de 0.90) tuvieron el mejor Sharpe (1.18 contra 0.94 sin regla), pero con la corrección de Bonferroni para 19 pruebas el p de la mejor es 0.295, y el mejor Sharpe de 19 estrategias sin ventaja ya promedia 0.89 por azar. En la validación hacia adelante, elegir con el pasado escogió siempre la misma regla, que quedó en promedio en el lugar 5.1 de 19 (se espera 10 sin habilidad), y obtuvo un Sharpe fuera de muestra de 1.09 contra 0.93 sin regla, una diferencia menor que el error estándar de 0.56. El resultado es consistente con la idea de que reaccionar rápido a la volatilidad ayuda al carry, pero no la demuestra: el periodo es corto (3.23 años fuera de muestra), la familia de reglas se armó después de ver el resultado de la clase 26 y las explicaciones posibles (que la volatilidad se agrupa y se anticipa parcialmente, o simplemente que esta muestra fue favorable) no están probadas.
 
 ## Resultados de la clase 23
 
@@ -223,6 +236,52 @@ Rotación anual y Sharpe según el costo por unidad operada (los puntos base son
 | A: carry base | 11.49 | 0.94 | 0.91 | 0.89 | 0.81 |
 | B: volatilidad objetivo | 19.94 | 1.11 | 1.07 | 1.03 | 0.90 |
 | C: media exposición tras caída | 13.92 | 0.89 | 0.85 | 0.82 | 0.72 |
+## Resultados de la clase 27
+
+Evaluación del 15 de septiembre de 2022 al 21 de octubre de 2026 (1,065 días, 4.23 años), con la familia de 19 reglas sobre el carry de la clase 25, rendimientos totales y rezago de un día.
+
+Sharpe de la familia en toda la muestra (esto usa el futuro y no es un resultado fuera de muestra):
+
+| Regla | Sharpe |
+|---|---|
+| A: sin regla | 0.94 |
+| B: lambda de 0.99 (topes de 1.5, 2 y 3) | 1.01 |
+| B: lambda de 0.97 (topes de 1.5, 2 y 3) | 1.06 |
+| B: lambda de 0.94 (topes de 3 y 2 / de 1.5) | 1.11 / 1.12 |
+| B: lambda de 0.90 (topes de 3 y 2 / de 1.5) | 1.14 / 1.18 |
+| C: caída de 2%, exposición de 0.25 / 0.5 | 0.75 / 0.85 |
+| C: caída de 3%, exposición de 0.25 / 0.5 | 0.84 / 0.89 |
+| C: caída de 5%, exposición de 0.25 / 0.5 | 0.84 / 0.88 |
+
+La mejor en toda la muestra es B con lambda de 0.90 y tope de 1.5: Sharpe de 1.18, p de 0.016 y p con Bonferroni (19 pruebas) de 0.295.
+
+Validación hacia adelante (cada 126 días, ventana creciente con mínimo de 252 días). La regla elegida fue siempre B con lambda de 0.90 y tope de 1.5:
+
+| Desde | Sharpe entrenamiento | Sharpe prueba | Lugar entre 19 | Sharpe prueba de A | Sharpe prueba del promedio |
+|---|---|---|---|---|---|
+| 2023-09-04 | 1.44 | 1.33 | 1 | 0.98 | 1.07 |
+| 2024-02-27 | 1.41 | menos 1.18 | 18 | menos 0.78 | menos 0.85 |
+| 2024-08-21 | 0.73 | 0.82 | 1 | 0.42 | 0.62 |
+| 2025-02-14 | 0.74 | 0.39 | 11 | 0.73 | 0.42 |
+| 2025-08-13 | 0.68 | 2.96 | 2 | 2.83 | 2.87 |
+| 2026-02-09 | 1.00 | 2.24 | 1 | 1.85 | 2.00 |
+| 2026-08-04 | 1.15 | 1.58 | 2 | 1.16 | 1.22 |
+
+Lugar promedio de la elegida en la prueba: 5.1 de 19 (sin habilidad se espera 10).
+
+Resultado fuera de muestra (813 días, 3.23 años, mismas fechas para todas):
+
+| Estrategia | Rend. anual | Volatilidad | Sharpe | t | p | Caída máxima |
+|---|---|---|---|---|---|---|
+| Elegida con el pasado | 5.28% | 4.83% | 1.093 | 1.964 | 0.050 | menos 7.37% |
+| A: sin regla | 4.27% | 4.61% | 0.927 | 1.665 | 0.096 | menos 7.44% |
+| Promedio de las 19 | 4.44% | 4.38% | 1.014 | 1.821 | 0.069 | menos 6.40% |
+| B: lambda de 0.94, tope de 2 (clase 26) | 5.04% | 4.76% | 1.058 | 1.901 | 0.057 | menos 6.87% |
+| Mejor en toda la muestra (usa el futuro) | 5.28% | 4.83% | 1.093 | 1.964 | 0.050 | menos 7.37% |
+
+El error estándar aproximado del Sharpe fuera de muestra es 0.56. No hubo cambios de regla entre periodos, así que la elegida y la mejor de toda la muestra coinciden.
+
+Rotación anual de cuatro reglas de la familia (unidades operadas por año): A, 11.49; B con lambda de 0.94 y tope de 2, 19.94; B con lambda de 0.90 y tope de 3, 27.25; C con caída de 3% y exposición de 0.5, 13.92.
 
 ## Limitaciones
 
@@ -249,3 +308,9 @@ Rotación anual y Sharpe según el costo por unidad operada (los puntos base son
 * B sube el apalancamiento hasta 1.78 en periodos tranquilos, lo que implica financiamiento y margen que no se modelaron. El control con el apalancamiento mezclado solo se aplicó a B, y no a C.
 * Los estimadores de volatilidad con EWMA reaccionan después del primer golpe, así que B no reduce el riesgo de una caída repentina de un solo día (la pérdida promedio del peor 5% de los días no cambió).
 * Los costos de 1, 2 y 5 puntos base por unidad operada son un supuesto mío y no los costos de la mesa. Las limitaciones de la clase 25 sobre las tasas aproximadas, sin puntos forward, también aplican.
+  * El resultado fuera de muestra cubre 3.23 años y 7 periodos de 126 días, con un error estándar del Sharpe de 0.56. Las diferencias entre la regla elegida (1.09), A (0.93), el promedio de las 19 (1.01) y la regla de la clase 26 (1.06) son menores que ese error, y el p de 0.050 de la elegida no se corrige por las 19 reglas probadas.
+* La familia de 19 reglas se armó después de ver, en la clase 26, que la volatilidad objetivo funcionaba en esta misma muestra, así que la validación hacia adelante no es completamente limpia: la idea de B ya salió de estos datos, y eso sesga el resultado a favor de B.
+* Como la regla elegida fue siempre la misma, la validación hacia adelante coincide con la mejor de toda la muestra y aporta poca evidencia independiente. Además, las 19 reglas están muy correlacionadas (las de volatilidad objetivo, con distinto tope, dan casi el mismo Sharpe), así que el número efectivo de pruebas es menor a 19 y Bonferroni es conservador, mientras que la simulación del mejor de 19 estrategias (que supone independencia) sobrestima el azar.
+* La parrilla de parámetros (lambda, tope, umbral y exposición) es de pocos valores y no incluye el objetivo de volatilidad (4.5%), que se mantuvo fijo. Un objetivo distinto cambia el apalancamiento promedio, pero no el Sharpe de las reglas B salvo por el tope.
+* No se midieron los costos de la regla elegida (lambda de 0.90 y tope de 1.5), solo la rotación de cuatro reglas de la familia. Reaccionar más rápido a la volatilidad aumenta la rotación (27.25 con lambda de 0.90 y tope de 3 contra 11.49 de A), lo que reduce el Sharpe con costos, y los puntos base son un supuesto.
+* Las limitaciones de las clases 25 y 26 sobre las tasas aproximadas, el apalancamiento sin costo de financiamiento y las pocas caídas fuertes en la muestra también aplican.
